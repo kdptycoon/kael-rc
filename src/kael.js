@@ -48,6 +48,41 @@ const RULES = [
       'Overthinking is your mind trying to keep you safe. Let’s name the fear underneath it instead of the fortieth interpretation.',
   },
   {
+    test: /over-?explain|misunderst|justify|defend myself/i,
+    reply:
+      'When you feel misunderstood, more words rarely fix it. What’s the one sentence underneath all the explaining that you actually need them to hear?',
+  },
+  {
+    test: /detective|clue|checking their|last seen|stalk|investigat/i,
+    reply:
+      'Gathering evidence is how anxiety pretends to be in control. What’s the question you’re investigating instead of simply asking?',
+  },
+  {
+    test: /paragraph|long (text|message)|essay|wall of text|huge (text|message)/i,
+    reply:
+      'A shorter, braver message usually travels further than a perfect one. What are you most afraid they’ll miss if you keep it simple?',
+  },
+  {
+    test: /cool|pretend|act like|unbothered|play it|want less/i,
+    reply:
+      'Performing “fine with less” protects you and starves you at the same time. What would you ask for if you let yourself want it openly?',
+  },
+  {
+    test: /numb|don'?t feel|feel nothing|empty|detached|shut down/i,
+    reply:
+      'Numbness is protection, not absence — something decided feeling was unsafe for a while. What happened right before it went quiet?',
+  },
+  {
+    test: /hope|hopeful|optimis|excited|good about|better lately/i,
+    reply:
+      'Hold onto that without gripping it. What’s the small sign that’s telling you this might be okay?',
+  },
+  {
+    test: /chemistry|emotional safety|feels? safe|exciting|spark|intensity|drawn to/i,
+    reply:
+      'Chemistry is loud; safety is quiet — and you were taught to trust the loud one. What does calm actually feel like in your body when someone is steady with you?',
+  },
+  {
     test: /thank|that help|makes sense|feel better|good point/i,
     reply: 'I’m glad. Sit with it for a moment — you don’t have to solve everything tonight.',
   },
@@ -90,4 +125,42 @@ const CHIP_EXCHANGES = {
 
 export function chipExchange(type) {
   return CHIP_EXCHANGES[type] || CHIP_EXCHANGES.decode
+}
+
+// Moods you can bring to Kael from Home. Each opens chat with a felt acknowledgement.
+const MOOD_EXCHANGES = {
+  anxious: {
+    user: 'I’m feeling really anxious right now.',
+    kael:
+      'I’m here. Anxiety usually means something matters and feels uncertain at the same time. What’s the thought your mind keeps circling back to?',
+  },
+  hurt: {
+    user: 'I’m feeling hurt.',
+    kael:
+      'That’s worth taking seriously. Tell me what happened — and what it made you believe about where you stand with them.',
+  },
+  hopeful: {
+    user: 'I’m feeling hopeful, actually.',
+    kael:
+      'Good. Hope is information too. What shifted — and what would you like to protect about this feeling?',
+  },
+  numb: {
+    user: 'I feel kind of numb.',
+    kael:
+      'Numb is often a lot of feeling with the volume turned down. We don’t have to force it. When did you last feel something clearly?',
+  },
+  calm: {
+    user: 'I feel calm right now.',
+    kael:
+      'Then this is a good moment to think clearly. What have you been avoiding looking at when the feelings were louder?',
+  },
+  overwhelmed: {
+    user: 'I’m overwhelmed.',
+    kael:
+      'Let’s make it smaller. Name the one thing pressing on you most right now — we’ll start there, not everywhere.',
+  },
+}
+
+export function moodExchange(id) {
+  return MOOD_EXCHANGES[id] || MOOD_EXCHANGES.anxious
 }

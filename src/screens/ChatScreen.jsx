@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Sparkle, Sliders, Plus, Send, Reply, Pattern } from '../components/Icons.jsx'
+import { Sparkle, Sliders, Plus, Send, Reply, Pattern, Back } from '../components/Icons.jsx'
 
 const CHIPS = [
   { type: 'decode', label: 'Decode this', Icon: Sparkle },
@@ -8,7 +8,7 @@ const CHIPS = [
   { type: 'pattern', label: 'Find the pattern', Icon: Pattern },
 ]
 
-export default function ChatScreen({ messages = [], typing = false, onSend, onChip }) {
+export default function ChatScreen({ messages = [], typing = false, onSend, onChip, onBack }) {
   const [draft, setDraft] = useState('')
   const endRef = useRef(null)
 
@@ -27,14 +27,17 @@ export default function ChatScreen({ messages = [], typing = false, onSend, onCh
   return (
     <div className="chat-root">
       <header className="chat-head">
-        <button className="ch-set" aria-label="Settings">
-          <Sliders size={20} sw={1.6} />
+        <button className="ch-back" onClick={() => onBack?.()} aria-label="Back to home">
+          <Back size={22} sw={1.7} />
         </button>
         <span className="ch-name">Kael</span>
         <span className="ch-sub">
           <span className="live" />
-          Chat
+          Online
         </span>
+        <button className="ch-set" aria-label="Settings">
+          <Sliders size={20} sw={1.6} />
+        </button>
       </header>
 
       <div className="chat-scroll">

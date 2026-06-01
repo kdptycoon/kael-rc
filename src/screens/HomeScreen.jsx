@@ -2,7 +2,6 @@ import { motion } from 'framer-motion'
 import {
   Person,
   Sparkle,
-  ChevronRight,
   ArrowUpRight,
   Clock,
   Spiral,
@@ -13,11 +12,23 @@ import {
   LoopText,
   TurnAway,
   Ellipsis,
-  Loop,
-  Compass,
-  Pulse,
-  Book,
+  MoodAnxious,
+  MoodHurt,
+  MoodHopeful,
+  MoodNumb,
+  MoodCalm,
+  MoodOverwhelmed,
 } from '../components/Icons.jsx'
+import { LESSONS } from '../lessons.js'
+
+const MOODS = [
+  { id: 'anxious', label: 'Anxious', Icon: MoodAnxious },
+  { id: 'hurt', label: 'Hurt', Icon: MoodHurt },
+  { id: 'hopeful', label: 'Hopeful', Icon: MoodHopeful },
+  { id: 'numb', label: 'Numb', Icon: MoodNumb },
+  { id: 'calm', label: 'Calm', Icon: MoodCalm },
+  { id: 'overwhelmed', label: 'Overwhelmed', Icon: MoodOverwhelmed },
+]
 
 const PROMPTS = [
   { label: 'I’m spiraling', Icon: Spiral },
@@ -30,13 +41,14 @@ const PROMPTS = [
   { label: 'Something else', Icon: Ellipsis },
 ]
 
+// Worded as first-person messages so a tap sends them straight into chat.
 const THREADS = [
-  { title: 'The inconsistency loop with R', meta: 'Last updated today', Icon: Loop },
-  { title: 'Your fear of asking for clarity', meta: 'Last updated yesterday', Icon: Compass },
-  { title: 'The anxious pursuit cycle', meta: 'Last updated 2 days ago', Icon: Pulse },
+  'I keep chasing clarity every time R pulls back.',
+  'I can’t stop overthinking his last text.',
+  'I feel deprioritized, like I don’t really matter to them.',
 ]
 
-export default function HomeScreen({ onPrompt, onStart }) {
+export default function HomeScreen({ onPrompt, onStart, onMood, onOpenLesson }) {
   return (
     <div className="screen-scroll home-scroll">
       <header className="app-head">
@@ -51,9 +63,31 @@ export default function HomeScreen({ onPrompt, onStart }) {
 
       <section className="hero">
         <h1>
-          How are you, <em>really?</em>
+          What are you <em>carrying</em> today?
         </h1>
-        <p>Bring whatever is on your mind. I’ll help you make sense of it.</p>
+        <p>Bring whatever’s weighing on you. We’ll make sense of it together.</p>
+      </section>
+
+      <section className="block pad">
+        <div className="sec-head">
+          <span className="eyebrow">Bring a mood to Kael</span>
+        </div>
+        <div className="mood-row block-gap">
+          {MOODS.map(({ id, label, Icon }) => (
+            <motion.button
+              key={id}
+              className="mood-chip"
+              onClick={() => onMood?.(id)}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 26 }}
+            >
+              <span className="mc-ic">
+                <Icon size={17} sw={1.6} />
+              </span>
+              {label}
+            </motion.button>
+          ))}
+        </div>
       </section>
 
       <section className="block pad">
@@ -92,47 +126,52 @@ export default function HomeScreen({ onPrompt, onStart }) {
 
       <section className="block pad">
         <div className="sec-head">
-          <span className="eyebrow">Active threads</span>
+          <span className="eyebrow">Pick up where you left off</span>
           <span className="sec-link">View all</span>
         </div>
-        <div className="thread-card block-gap">
-          {THREADS.map(({ title, meta, Icon }) => (
-            <button key={title} className="thread" onClick={() => onStart?.()}>
-              <span className="tile t-ic">
-                <Icon size={20} />
-              </span>
-              <span className="t-body">
-                <span className="t-title">{title}</span>
-                <span className="t-meta">{meta}</span>
-              </span>
-              <span className="t-go">
-                <ChevronRight size={18} sw={1.7} />
-              </span>
-            </button>
+        <div className="thread-pills block-gap">
+          {THREADS.map((text) => (
+            <motion.button
+              key={text}
+              className="thread-pill"
+              onClick={() => onPrompt?.(text)}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 26 }}
+            >
+              {text}
+            </motion.button>
           ))}
         </div>
       </section>
 
       <section className="block pad">
         <div className="sec-head">
-          <span className="eyebrow">Recommended for you</span>
+          <span className="eyebrow">Recommended reading</span>
           <span className="sec-link">Why these?</span>
         </div>
-        <button className="lesson block-gap" onClick={() => onStart?.()}>
-          <span className="tile l-ic">
-            <Book size={24} />
-          </span>
-          <span className="l-body">
-            <span className="l-title">Why inconsistent warmth feels addictive</span>
-            <span className="l-meta">
-              <Clock size={13} sw={1.6} />
-              3 min read
-            </span>
-          </span>
-          <span className="l-go">
-            <ArrowUpRight size={18} sw={1.7} />
-          </span>
-        </button>
+        <div className="lesson-list block-gap">
+          {LESSONS.map((l, i) => (
+            <motion.button
+              key={l.id}
+              className="lesson-row"
+              onClick={() => onOpenLesson?.(l.id)}
+              whileTap={{ scale: 0.99 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+            >
+              <span className="lr-index">{String(i + 1).padStart(2, '0')}</span>
+              <span className="lr-body">
+                <span className="lr-title">{l.title}</span>
+                <span className="lr-meta">
+                  <Clock size={12} sw={1.6} />
+                  {l.read}
+                </span>
+              </span>
+              <span className="lr-go">
+                <ArrowUpRight size={16} sw={1.7} />
+              </span>
+            </motion.button>
+          ))}
+        </div>
       </section>
     </div>
   )

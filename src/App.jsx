@@ -5,8 +5,10 @@ import HomeScreen from './screens/HomeScreen.jsx'
 import ChatScreen from './screens/ChatScreen.jsx'
 import YouScreen from './screens/YouScreen.jsx'
 import JourneyScreen from './screens/JourneyScreen.jsx'
+import LessonScreen from './screens/LessonScreen.jsx'
 import { Sparkle, Sun, Moon } from './components/Icons.jsx'
-import { kaelReply, chipExchange } from './kael.js'
+import { kaelReply, chipExchange, moodExchange } from './kael.js'
+import { getLesson } from './lessons.js'
 
 function nowTime() {
   return new Date()
@@ -32,14 +34,22 @@ function ScreenView({ tab, messages, typing, handlers }) {
           typing={typing}
           onSend={handlers.sendText}
           onChip={handlers.sendChip}
+          onBack={handlers.goHome}
         />
       )
     case 'you':
-      return <YouScreen onNavigate={handlers.goChat} />
+      return <YouScreen onNavigate={handlers.goChat} onOpenSheet={handlers.openSheet} />
     case 'journey':
-      return <JourneyScreen onNavigate={handlers.goChat} />
+      return <JourneyScreen onNavigate={handlers.goChat} onOpenSheet={handlers.openSheet} />
     default:
-      return <HomeScreen onPrompt={handlers.startFromPrompt} onStart={handlers.goChat} />
+      return (
+        <HomeScreen
+          onPrompt={handlers.startFromPrompt}
+          onStart={handlers.goChat}
+          onMood={handlers.bringMood}
+          onOpenLesson={handlers.openLesson}
+        />
+      )
   }
 }
 
@@ -49,6 +59,8 @@ export default function App() {
   const [messages, setMessages] = useState(SEED)
   const [typing, setTyping] = useState(false)
   const [scale, setScale] = useState(0.72)
+  const [activeLesson, setActiveLesson] = useState(null)
+  const [sheet, setSheet] = useState(null)
 
   useLayoutEffect(() => {
     const fit = () => {
@@ -95,7 +107,45 @@ export default function App() {
     sendText(label)
   }
 
-  const handlers = { sendText, sendChip, goChat: () => setTab('chat'), startFromPrompt }
+  function bringMood(id) {
+    const { user, kael } = moodExchange(id)
+    setTab('chat')
+    setMessages((m) => [...m, { id: nextId(), who: 'user', text: user, time: nowTime() }])
+    respond(kael)
+  }
+
+  function openLesson(id) {
+    setActiveLesson(id)
+  }
+
+  function discussLesson(lesson) {
+    setActiveLesson(null)
+    setTab('chat')
+    sendText(`I just read “${lesson.title}.” It stirred something up — can we talk about it?`)
+  }
+
+  function openSheet(detail) {
+    setSheet(detail)
+  }
+
+  function sheetCta(message) {
+    setSheet(null)
+    setTab('chat')
+    sendText(message)
+  }
+
+  const handlers = {
+    sendText,
+    sendChip,
+    goChat: () => setTab('chat'),
+    goHome: () => setTab('home'),
+    startFromPrompt,
+    bringMood,
+    openLesson,
+    openSheet,
+  }
+
+  const lesson = activeLesson ? getLesson(activeLesson) : null
 
   return (
     <div className="stage" data-theme={theme}>
@@ -132,7 +182,24 @@ export default function App() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.1, ease }}
         >
-          <PhoneFrame theme={theme} active={tab} onSelect={setTab}>
+          <PhoneFrame
+            theme={theme}
+            active={tab}
+            onSelect={setTab}
+            hideNav={tab === 'chat'}
+            overlay={
+              lesson ? (
+                <LessonScreen
+                  lesson={lesson}
+                  onBack={() => setActiveLesson(null)}
+                  onDiscuss={discussLesson}
+                />
+              ) : null
+            }
+            sheet={sheet}
+            onCloseSheet={() => setSheet(null)}
+            onSheetCta={sheetCta}
+          >
             <ScreenView tab={tab} messages={messages} typing={typing} handlers={handlers} />
           </PhoneFrame>
         </motion.div>

@@ -455,6 +455,42 @@ svg {
   opacity: 1;
   transform: scale(1);
 }
+/* centre medallion — the elevated "talk to Kael" portal */
+.nav-kael {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 4px;
+  color: var(--ink-3);
+  transition: color 0.25s ease;
+}
+.nav-kael[data-active='true'] {
+  color: var(--ink);
+}
+.nav-medallion {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--invert-bg);
+  color: var(--invert-ink);
+  display: grid;
+  place-items: center;
+  box-shadow: var(--shadow-float), 0 0 0 5px var(--nav-bg);
+  transition: box-shadow 0.2s ease;
+}
+.nav-kael[data-active='true'] .nav-medallion {
+  box-shadow: var(--shadow-float), 0 0 0 5px var(--nav-bg),
+    0 0 0 7px color-mix(in srgb, var(--ink) 13%, transparent);
+}
+.nav-kael .nav-label {
+  margin-top: 31px;
+}
 .home-indicator {
   position: absolute;
   bottom: 9px;
@@ -517,64 +553,113 @@ svg {
 .home-scroll {
   padding-bottom: 30px;
 }
-.app-head {
+.home-top {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 6px 24px 0;
+  gap: 16px;
+  padding: 12px 24px 2px;
 }
-.app-head .id-name {
-  font-family: var(--serif);
-  font-size: 25px;
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  line-height: 1;
-  color: var(--ink);
+.home-greeting {
+  min-width: 0;
 }
-.app-head .id-sub {
-  font-size: 11.5px;
-  letter-spacing: 0.14em;
+.hg-date {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--ink-3);
-  margin-top: 6px;
-  font-weight: 500;
+  margin-bottom: 13px;
 }
-.avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: var(--surface);
-  border: 1px solid var(--line-strong);
-  display: grid;
-  place-items: center;
-  color: var(--ink-2);
-  flex: none;
-  box-shadow: var(--shadow-card);
-}
-
-.hero {
-  padding: 26px 24px 4px;
-}
-.hero h1 {
+.home-greeting h1 {
   font-family: var(--serif);
   font-weight: 300;
-  font-size: 41px;
-  line-height: 1.04;
+  font-size: 38px;
+  line-height: 1.05;
   letter-spacing: -0.022em;
   color: var(--ink);
-  text-wrap: balance;
 }
-.hero h1 em {
-  font-style: italic;
-  font-weight: 400;
-}
-.hero p {
-  margin-top: 15px;
-  font-size: 16px;
-  line-height: 1.55;
+.hg-sub {
+  display: block;
+  margin-top: 13px;
+  font-size: 13.5px;
   color: var(--ink-2);
-  max-width: 33ch;
-  text-wrap: pretty;
+  letter-spacing: 0.005em;
+}
+.hg-avatar {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  margin-top: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--ink) 5%, transparent);
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+/* Home: prominent pick-up box; tapping opens the chat with Kael */
+.pickup {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: 22px;
+  padding: 18px 18px 16px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.pickup:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-float);
+}
+.pickup-q {
+  display: block;
+  font-family: var(--serif);
+  font-size: 23px;
+  font-weight: 400;
+  line-height: 1.22;
+  letter-spacing: -0.014em;
+  color: var(--ink);
+}
+.pickup-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 7px 7px 7px 16px;
+  border-radius: 999px;
+  background: var(--field);
+  border: 1px solid var(--line);
+}
+.pickup-ph {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  color: var(--ink-3);
+  letter-spacing: -0.003em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pickup-send {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--invert-bg);
+  color: var(--invert-ink);
+  display: grid;
+  place-items: center;
+  box-shadow: var(--shadow-btn);
 }
 
 .block {
@@ -588,63 +673,243 @@ svg {
   margin-top: 16px;
 }
 
-.prompt-grid {
+/* Home: mood grid (prominent tiles) — sits right under the pick-up box */
+.mood-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 11px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
 }
-.prompt {
-  position: relative;
-  background: var(--surface);
-  border: 1px solid var(--line-2);
-  border-radius: 19px;
-  padding: 16px 15px 15px;
-  min-height: 104px;
+.mood-tile {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 18px;
+  align-items: center;
+  gap: 10px;
+  padding: 17px 8px 15px;
+  border-radius: 18px;
+  border: 1px solid var(--line-2);
+  background: var(--surface);
   box-shadow: var(--shadow-card);
-  text-align: left;
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
 }
-.prompt:hover {
+.mood-tile:hover {
   transform: translateY(-2px);
   border-color: var(--line-strong);
   box-shadow: var(--shadow-float);
 }
-.prompt .p-ic {
+.mt-ic {
   color: var(--ink-2);
+  display: grid;
+  place-items: center;
 }
-.prompt .p-label {
-  font-size: 14.5px;
+.mt-name {
+  font-size: 13px;
   font-weight: 500;
-  line-height: 1.25;
   color: var(--ink);
-  letter-spacing: -0.005em;
+  letter-spacing: -0.003em;
 }
 
-.cta {
-  width: 100%;
-  height: 60px;
-  border-radius: 999px;
-  background: var(--btn);
-  color: var(--btn-ink);
+/* Home: a few ways in — relationship entry points, two per row */
+.ways {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+.way-pill {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 11px;
-  font-size: 16px;
+  gap: 9px;
+  width: 100%;
+  min-width: 0;
+  padding: 13px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--line-2);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 13px;
   font-weight: 500;
-  letter-spacing: 0.005em;
-  box-shadow: var(--shadow-btn);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  letter-spacing: -0.004em;
+  box-shadow: var(--shadow-card);
+  text-align: left;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
 }
-.cta:hover {
+.way-pill:hover {
+  transform: translateY(-1px);
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-float);
+}
+.way-ic {
+  display: grid;
+  place-items: center;
+  color: var(--ink-2);
+  flex: none;
+}
+
+/* Home: From Kael — proactive nudge cards, horizontal peek-scroll */
+.fromkael {
+  display: flex;
+  gap: 11px;
+  overflow-x: auto;
+  padding: 2px 24px 6px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.fromkael::-webkit-scrollbar {
+  display: none;
+}
+.fk-card {
+  flex: 0 0 230px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 152px;
+  padding: 15px 16px 14px;
+  border-radius: 18px;
+  border: 1px solid var(--line-2);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  text-align: left;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.fk-card:hover {
   transform: translateY(-2px);
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-float);
 }
-.cta:active {
-  transform: translateY(0);
+.fk-mark {
+  color: var(--ink-3);
+  margin-bottom: 11px;
+}
+.fk-text {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--ink);
+  letter-spacing: -0.004em;
+  text-wrap: pretty;
+}
+.fk-quote .fk-mark {
+  color: var(--ink-2);
+}
+.fk-quote .fk-text {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15.5px;
+  line-height: 1.36;
+}
+.fk-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 13px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--ink-2);
+}
+
+/* Learn screen */
+.learn-head {
+  padding: 14px 26px 8px;
+}
+.learn-head .eyebrow {
+  display: block;
+  margin-bottom: 13px;
+}
+.learn-head h1 {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 39px;
+  line-height: 1.02;
+  letter-spacing: -0.022em;
+  color: var(--ink);
+}
+.learn-head p {
+  margin-top: 11px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+/* Learn: featured read — inverted hero, Kael-curated */
+/* Learn: a personalized stack of reading cards (surface, theme-accurate) */
+.lessons-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.lcard {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: 22px;
+  padding: 19px 20px 18px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.lcard:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-float);
+}
+.lc-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.lc-tag svg {
+  color: var(--ink-2);
+}
+.lc-title {
+  display: block;
+  margin-top: 12px;
+  font-family: var(--serif);
+  font-size: 23px;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.014em;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.lc-desc {
+  display: block;
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+.lc-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line);
+}
+.lc-meta {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.lc-save {
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--ink-3);
+  transition: color 0.18s ease;
+}
+.lcard:hover .lc-save {
+  color: var(--ink);
 }
 
 .thread-card {

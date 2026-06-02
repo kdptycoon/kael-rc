@@ -1,25 +1,22 @@
 import { motion } from 'framer-motion'
 import {
-  Person,
-  Sparkle,
-  ArrowUpRight,
-  Clock,
+  Send,
   Spiral,
   Bolt,
   Distance,
-  Reply,
+  TurnAway,
   Fork,
   LoopText,
-  TurnAway,
-  Ellipsis,
   MoodAnxious,
   MoodHurt,
   MoodHopeful,
   MoodNumb,
   MoodCalm,
   MoodOverwhelmed,
+  Quote,
+  ArrowUpRight,
+  Sparkle,
 } from '../components/Icons.jsx'
-import { LESSONS } from '../lessons.js'
 
 const MOODS = [
   { id: 'anxious', label: 'Anxious', Icon: MoodAnxious },
@@ -30,59 +27,120 @@ const MOODS = [
   { id: 'overwhelmed', label: 'Overwhelmed', Icon: MoodOverwhelmed },
 ]
 
-const PROMPTS = [
-  { label: 'I’m spiraling', Icon: Spiral },
-  { label: 'We had a fight', Icon: Bolt },
-  { label: 'I feel distant from them', Icon: Distance },
-  { label: 'I need to reply', Icon: Reply },
-  { label: 'I’m confused about where this is going', Icon: Fork },
-  { label: 'I keep overthinking their text', Icon: LoopText },
-  { label: 'I feel rejected', Icon: TurnAway },
-  { label: 'Something else', Icon: Ellipsis },
+// Relationship-specific entry points — short label shown, fuller message sent to Kael.
+const WAYS = [
+  { label: 'I’m spiraling', msg: 'I’m spiraling and I can’t stop.', Icon: Spiral },
+  { label: 'We had a fight', msg: 'We had a fight and it’s still sitting with me.', Icon: Bolt },
+  { label: 'They’re distant', msg: 'They’re pulling away and it scares me.', Icon: Distance },
+  { label: 'I feel rejected', msg: 'I feel rejected, like I don’t matter to them.', Icon: TurnAway },
+  { label: 'Mixed signals', msg: 'I’m getting mixed signals and I’m confused about us.', Icon: Fork },
+  { label: 'Overthinking it', msg: 'I keep overthinking their last text.', Icon: LoopText },
 ]
 
-// Worded as first-person messages so a tap sends them straight into chat.
-const THREADS = [
-  'I keep chasing clarity every time R pulls back.',
-  'I can’t stop overthinking his last text.',
-  'I feel deprioritized, like I don’t really matter to them.',
+// Proactive nudges — Kael noticing things between sessions. Tapping continues the thread in chat.
+const FROM_KAEL = [
+  {
+    kind: 'prompt',
+    text: 'You replayed the fight with A twice yesterday. What shifted the second time?',
+    action: 'Reflect',
+    msg: 'I keep replaying the fight with A. The second time felt different, and I want to look at why.',
+  },
+  {
+    kind: 'prompt',
+    text: 'When a reply goes quiet, where do you feel it in your body first?',
+    action: 'Check in',
+    msg: 'When someone goes quiet on me I spiral before I even understand why.',
+  },
+  {
+    kind: 'quote',
+    text: 'You keep apologising for taking up space in your own life. I’d like us to question that one together.',
+    action: 'A moment from Kael',
+    msg: 'I keep apologising for who I am and shrinking to fit.',
+  },
 ]
 
-export default function HomeScreen({ onPrompt, onStart, onMood, onOpenLesson }) {
+function greeting() {
+  const h = new Date().getHours()
+  if (h < 5) return 'Late night'
+  if (h < 12) return 'Good morning'
+  if (h < 17) return 'Good afternoon'
+  if (h < 22) return 'Good evening'
+  return 'Late night'
+}
+
+function today() {
+  return new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+}
+
+export default function HomeScreen({ onPrompt, onMood, onStart }) {
   return (
     <div className="screen-scroll home-scroll">
-      <header className="app-head">
-        <div>
-          <div className="id-name">Kael</div>
-          <div className="id-sub">Your relationship intelligence</div>
+      <header className="home-top">
+        <div className="home-greeting">
+          <span className="hg-date">{today()}</span>
+          <h1>
+            {greeting()},
+            <br />
+            Sumit
+          </h1>
+          <span className="hg-sub">Day 142 with Kael · 6-day streak</span>
         </div>
-        <button className="avatar" aria-label="Profile">
-          <Person size={20} sw={1.6} />
-        </button>
+        <span className="hg-avatar" aria-hidden="true">
+          S
+        </span>
       </header>
 
-      <section className="hero">
-        <h1>
-          What are you <em>carrying</em> today?
-        </h1>
-        <p>Bring whatever’s weighing on you. We’ll make sense of it together.</p>
+      <section className="block pad">
+        <motion.button
+          className="pickup"
+          onClick={() => onStart?.()}
+          whileTap={{ scale: 0.99 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+          aria-label="Talk to Kael"
+        >
+          <span className="pickup-q">What’s alive right now?</span>
+          <span className="pickup-field">
+            <span className="pickup-ph">Say it out loud, or just start typing…</span>
+            <span className="pickup-send">
+              <Send size={18} sw={1.7} />
+            </span>
+          </span>
+        </motion.button>
       </section>
 
       <section className="block pad">
-        <div className="sec-head">
-          <span className="eyebrow">Bring a mood to Kael</span>
-        </div>
-        <div className="mood-row block-gap">
+        <span className="eyebrow">Bring a mood to Kael</span>
+        <div className="mood-grid block-gap">
           {MOODS.map(({ id, label, Icon }) => (
             <motion.button
               key={id}
-              className="mood-chip"
+              className="mood-tile"
               onClick={() => onMood?.(id)}
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.96 }}
               transition={{ type: 'spring', stiffness: 400, damping: 26 }}
             >
-              <span className="mc-ic">
-                <Icon size={17} sw={1.6} />
+              <span className="mt-ic">
+                <Icon size={22} sw={1.5} />
+              </span>
+              <span className="mt-name">{label}</span>
+            </motion.button>
+          ))}
+        </div>
+      </section>
+
+      <section className="block pad">
+        <span className="eyebrow">Bring a situation to Kael</span>
+        <div className="ways block-gap">
+          {WAYS.map(({ label, msg, Icon }) => (
+            <motion.button
+              key={label}
+              className="way-pill"
+              onClick={() => onPrompt?.(msg)}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 26 }}
+            >
+              <span className="way-ic">
+                <Icon size={16} sw={1.6} />
               </span>
               {label}
             </motion.button>
@@ -90,84 +148,24 @@ export default function HomeScreen({ onPrompt, onStart, onMood, onOpenLesson }) 
         </div>
       </section>
 
-      <section className="block pad">
-        <div className="sec-head">
-          <span className="eyebrow">What’s happening?</span>
-        </div>
-        <div className="prompt-grid block-gap">
-          {PROMPTS.map(({ label, Icon }) => (
+      <section className="block">
+        <span className="eyebrow pad">From Kael</span>
+        <div className="fromkael block-gap">
+          {FROM_KAEL.map((c) => (
             <motion.button
-              key={label}
-              className="prompt"
-              onClick={() => onPrompt?.(label)}
-              whileTap={{ scale: 0.97 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 26 }}
-            >
-              <span className="p-ic">
-                <Icon size={22} />
-              </span>
-              <span className="p-label">{label}</span>
-            </motion.button>
-          ))}
-        </div>
-      </section>
-
-      <section className="block pad">
-        <motion.button
-          className="cta"
-          onClick={() => onStart?.()}
-          whileTap={{ scale: 0.98 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 26 }}
-        >
-          <Sparkle size={19} sw={1.5} />
-          Start a chat with Kael
-        </motion.button>
-      </section>
-
-      <section className="block pad">
-        <div className="sec-head">
-          <span className="eyebrow">Pick up where you left off</span>
-          <span className="sec-link">View all</span>
-        </div>
-        <div className="thread-pills block-gap">
-          {THREADS.map((text) => (
-            <motion.button
-              key={text}
-              className="thread-pill"
-              onClick={() => onPrompt?.(text)}
+              key={c.text}
+              className={`fk-card${c.kind === 'quote' ? ' fk-quote' : ''}`}
+              onClick={() => onPrompt?.(c.msg)}
               whileTap={{ scale: 0.98 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 26 }}
-            >
-              {text}
-            </motion.button>
-          ))}
-        </div>
-      </section>
-
-      <section className="block pad">
-        <div className="sec-head">
-          <span className="eyebrow">Recommended reading</span>
-          <span className="sec-link">Why these?</span>
-        </div>
-        <div className="lesson-list block-gap">
-          {LESSONS.map((l, i) => (
-            <motion.button
-              key={l.id}
-              className="lesson-row"
-              onClick={() => onOpenLesson?.(l.id)}
-              whileTap={{ scale: 0.99 }}
               transition={{ type: 'spring', stiffness: 400, damping: 28 }}
             >
-              <span className="lr-index">{String(i + 1).padStart(2, '0')}</span>
-              <span className="lr-body">
-                <span className="lr-title">{l.title}</span>
-                <span className="lr-meta">
-                  <Clock size={12} sw={1.6} />
-                  {l.read}
-                </span>
+              <span className="fk-mark">
+                {c.kind === 'quote' ? <Quote size={18} sw={1.5} /> : <Sparkle size={15} sw={1.5} />}
               </span>
-              <span className="lr-go">
-                <ArrowUpRight size={16} sw={1.7} />
+              <span className="fk-text">{c.text}</span>
+              <span className="fk-action">
+                {c.action}
+                <ArrowUpRight size={14} sw={1.7} />
               </span>
             </motion.button>
           ))}

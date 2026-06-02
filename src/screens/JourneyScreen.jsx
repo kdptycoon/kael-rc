@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { Bulb, Cloud, Flag, Wave, Cycle } from '../components/Icons.jsx'
 
-// Each moment carries a type (icon + label). Every node looks the same — we don't
+// Each moment carries a type (icon + label). Every node looks the same; we don't
 // rank moments as big or small; the spine just holds them in order.
 const TYPES = {
   breakthrough: { label: 'Breakthrough', Icon: Bulb },
@@ -34,12 +34,12 @@ const MOMENTS = [
         },
         {
           label: 'Worth sitting with',
-          text: 'What were you really asking for in that moment — to be heard, to be reassured, or simply not to be left?',
+          text: 'What were you really asking for in that moment: to be heard, to be reassured, or simply not to be left?',
         },
       ],
       cta: {
         label: 'Reflect this with Kael',
-        message: 'I want to go back to the fight with A — it’s still sitting with me.',
+        message: 'I want to go back to the fight with A. It’s still sitting with me.',
       },
     },
   },
@@ -49,7 +49,7 @@ const MOMENTS = [
     mon: 'May',
     day: '27',
     title: 'You named the fear out loud',
-    body: 'A slow reply stopped meaning “busy.”\nYou caught the old story it feeds — and said it plainly.',
+    body: 'A slow reply stopped meaning “busy.”\nYou caught the old story it feeds, and said it plainly.',
     detail: {
       eyebrow: 'Breakthrough · May 27',
       title: 'Delayed replies trigger your fear of being deprioritized.',
@@ -60,7 +60,7 @@ const MOMENTS = [
         },
         {
           label: 'Where it comes from',
-          text: 'You traced it back — this fear was learned long before this person, in places where your needs came last.',
+          text: 'You traced it back. This fear was learned long before this person, in places where your needs came last.',
         },
         {
           label: 'What changes now',
@@ -90,7 +90,7 @@ const MOMENTS = [
         },
         {
           label: 'Why it mattered',
-          text: 'You led with honesty even though the answer wasn’t guaranteed — the opposite of bargaining for scraps of certainty.',
+          text: 'You led with honesty even though the answer wasn’t guaranteed, the opposite of bargaining for scraps of certainty.',
         },
         {
           label: 'Keep practising',

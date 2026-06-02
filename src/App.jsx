@@ -5,6 +5,7 @@ import HomeScreen from './screens/HomeScreen.jsx'
 import ChatScreen from './screens/ChatScreen.jsx'
 import YouScreen from './screens/YouScreen.jsx'
 import JourneyScreen from './screens/JourneyScreen.jsx'
+import LearnScreen from './screens/LearnScreen.jsx'
 import LessonScreen from './screens/LessonScreen.jsx'
 import { Sparkle, Sun, Moon } from './components/Icons.jsx'
 import { kaelReply, chipExchange, moodExchange } from './kael.js'
@@ -41,13 +42,14 @@ function ScreenView({ tab, messages, typing, handlers }) {
       return <YouScreen onNavigate={handlers.goChat} onOpenSheet={handlers.openSheet} />
     case 'journey':
       return <JourneyScreen onNavigate={handlers.goChat} onOpenSheet={handlers.openSheet} />
+    case 'learn':
+      return <LearnScreen onOpenLesson={handlers.openLesson} />
     default:
       return (
         <HomeScreen
           onPrompt={handlers.startFromPrompt}
           onStart={handlers.goChat}
           onMood={handlers.bringMood}
-          onOpenLesson={handlers.openLesson}
         />
       )
   }
@@ -121,7 +123,7 @@ export default function App() {
   function discussLesson(lesson) {
     setActiveLesson(null)
     setTab('chat')
-    sendText(`I just read “${lesson.title}.” It stirred something up — can we talk about it?`)
+    sendText(`I just read “${lesson.title}.” It stirred something up. Can we talk about it?`)
   }
 
   function openSheet(detail) {

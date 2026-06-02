@@ -43,6 +43,9 @@ import {
   CloudRain,
   Leaf,
   Waves,
+  CircleHalf,
+  Mountains,
+  Heart,
   Flag as PhFlag,
   ArrowsClockwise,
   Lightbulb,
@@ -120,6 +123,14 @@ export const MoodHopeful = make(SunHorizon)
 export const MoodNumb = make(CloudFog)
 export const MoodCalm = make(Leaf)
 export const MoodOverwhelmed = make(Waves)
+
+/* ---- home: inner weather ---- */
+export const Clear = make(PhSun)
+export const Steady = make(CircleHalf)
+export const Tender = make(Heart)
+export const Foggy = make(CloudFog)
+export const Restless = make(Mountains)
+export const Heavy = make(CloudRain)
 
 /* ---- theme toggle ---- */
 export const Sun = make(PhSun)

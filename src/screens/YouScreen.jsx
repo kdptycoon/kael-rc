@@ -9,15 +9,15 @@ import {
   ChevronRight,
 } from '../components/Icons.jsx'
 
-// The full "how Kael reads you" portrait lives in a bottom sheet — the screen
+// The full "how Kael reads you" portrait lives in a bottom sheet; the screen
 // only shows a short, decorated hook so the profile feels like a snapshot, not an essay.
 const PORTRAIT = {
   eyebrow: 'How Kael sees you · Updated 2 days ago',
-  title: 'You’re not too much — you’ve been asking the wrong people to prove you’re enough.',
+  title: 'You’re not too much. You’ve been asking the wrong people to prove you’re enough.',
   sections: [
     {
       label: 'How you’re wired',
-      text: 'You feel things early and deeply, often before you have words for them. You read people closely — a shift in tone, a slower reply — and your mind moves fast to protect you, sometimes faster than the facts.',
+      text: 'You feel things early and deeply, often before you have words for them. You read people closely: a shift in tone, a slower reply. Your mind moves fast to protect you, sometimes faster than the facts.',
     },
     {
       label: 'What you do with it',
@@ -25,7 +25,7 @@ const PORTRAIT = {
     },
     {
       label: 'Where you’re heading',
-      text: 'The work now is to ask sooner — and to offer yourself the steadiness you keep hoping to find in someone else.',
+      text: 'The work now is to ask sooner, and to offer yourself the steadiness you keep hoping to find in someone else.',
     },
   ],
   cta: {
@@ -49,7 +49,7 @@ const LOOPS = [
       sections: [
         {
           label: 'What it is',
-          text: 'When warmth becomes unpredictable, you try to resolve the uncertainty by pursuing — texts, check-ins, over-functioning. The chase feels like closeness, but it’s really anxiety management.',
+          text: 'When warmth becomes unpredictable, you try to resolve the uncertainty by pursuing: texts, check-ins, over-functioning. The chase feels like closeness, but it’s really anxiety management.',
         },
         {
           label: 'When it shows up',
@@ -78,7 +78,7 @@ const LOOPS = [
       sections: [
         {
           label: 'What it is',
-          text: 'When you sense someone has the wrong read on you, you pile on words to fix it — paragraphs, justifications, proof. The volume rises as the fear of being misjudged grows.',
+          text: 'When you sense someone has the wrong read on you, you pile on words to fix it: paragraphs, justifications, proof. The volume rises as the fear of being misjudged grows.',
         },
         {
           label: 'When it shows up',
@@ -107,7 +107,7 @@ const LOOPS = [
       sections: [
         {
           label: 'What it is',
-          text: 'When a reply doesn’t come, you don’t wait — you decide what the quiet means, and it’s almost always the cruelest reading.',
+          text: 'When a reply doesn’t come, you don’t wait. You decide what the quiet means, and it’s almost always the cruelest reading.',
         },
         {
           label: 'When it shows up',
@@ -136,7 +136,7 @@ const MOVES = [
       sections: [
         {
           label: 'What it is',
-          text: 'Scanning for clues — last-seen times, story views, who liked what — to answer a question you’re afraid to ask out loud.',
+          text: 'Scanning for clues: last-seen times, story views, who liked what. Anything to answer a question you’re afraid to ask out loud.',
         },
         {
           label: 'What it’s really asking',
@@ -162,7 +162,7 @@ const MOVES = [
       sections: [
         {
           label: 'What it is',
-          text: 'Composing the long, perfectly-worded message that explains everything you feel — then re-editing it ten times, or never sending it at all.',
+          text: 'Composing the long, perfectly-worded message that explains everything you feel, then re-editing it ten times, or never sending it at all.',
         },
         {
           label: 'What it’s really asking',
@@ -188,7 +188,7 @@ const MOVES = [
       sections: [
         {
           label: 'What it is',
-          text: 'Saying you’re okay when you’re not — going low-maintenance and agreeable so you stay easy to be around.',
+          text: 'Saying you’re okay when you’re not, going low-maintenance and agreeable so you stay easy to be around.',
         },
         {
           label: 'What it’s really asking',
@@ -214,7 +214,7 @@ const MOVES = [
       sections: [
         {
           label: 'What it is',
-          text: 'Performing unbothered — matching their energy, pretending you want less than you do so you never look like the one who cares more.',
+          text: 'Performing unbothered, matching their energy, pretending you want less than you do so you never look like the one who cares more.',
         },
         {
           label: 'What it’s really asking',
@@ -222,7 +222,7 @@ const MOVES = [
         },
         {
           label: 'What to try',
-          text: 'Let yourself want what you want, plainly. Caring isn’t a weakness to hide — it’s the whole point.',
+          text: 'Let yourself want what you want, plainly. Caring isn’t a weakness to hide. It’s the whole point.',
         },
       ],
       cta: {
@@ -236,7 +236,7 @@ const MOVES = [
 const TRIGGERS = ['Ambiguity', 'Slow replies', 'Feeling deprioritized']
 const NEEDS = ['Clarity', 'Consistency', 'Repair', 'Emotional warmth']
 
-// Tiny monochrome bar graph — the final bar is highlighted as "most recent".
+// Tiny monochrome bar graph; the final bar is highlighted as "most recent".
 function Bars({ data }) {
   const max = Math.max(...data)
   return (
@@ -257,7 +257,7 @@ export default function YouScreen({ onNavigate, onOpenSheet }) {
     <div className="screen-scroll you-scroll">
       <header className="you-head">
         <h1>Understand yourself.</h1>
-        <p>A living read on how you love — it deepens as you and Kael talk.</p>
+        <p>A living read on how you love. It deepens as you and Kael talk.</p>
       </header>
 
       <section className="block pad">
@@ -270,7 +270,7 @@ export default function YouScreen({ onNavigate, onOpenSheet }) {
             </span>
           </span>
           <span className="ph-quote">
-            You feel things early and deeply — and your mind races to protect you long before
+            You feel things early and deeply, and your mind races to protect you long before
             the facts catch up.
           </span>
           <span className="ph-more">

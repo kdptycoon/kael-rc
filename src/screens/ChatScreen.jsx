@@ -33,7 +33,7 @@ export default function ChatScreen({ messages = [], typing = false, onSend, onCh
         <span className="ch-name">Kael</span>
         <span className="ch-sub">
           <span className="live" />
-          Online
+          Present
         </span>
         <button className="ch-set" aria-label="Settings">
           <Sliders size={20} sw={1.6} />

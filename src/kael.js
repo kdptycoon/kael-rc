@@ -1,11 +1,11 @@
 // Kael's voice: calm, precise, never performative. 1–3 short sentences.
-// A tiny keyword matcher — enough to make the conversation feel responsive.
+// A tiny keyword matcher, enough to make the conversation feel responsive.
 
 const RULES = [
   {
     test: /spiral|panic|anxious|overwhelm|can'?t stop|racing|obsess/i,
     reply:
-      'Let’s slow it down. What part hurts most right now — the distance, the ambiguity, or what it seems to mean about you?',
+      'Let’s slow it down. What part hurts most right now: the distance, the ambiguity, or what it seems to mean about you?',
   },
   {
     test: /fight|argued?|argument|yell|blew up|snapped/i,
@@ -15,12 +15,12 @@ const RULES = [
   {
     test: /distan|space|pulling away|cold|withdraw|drifting/i,
     reply:
-      'Distance is loud when you care. Before we read it as rejection — what did they actually say, and what is your mind adding to it?',
+      'Distance is loud when you care. Before we read it as rejection, what did they actually say, and what is your mind adding to it?',
   },
   {
     test: /reply|respond|text back|what.*say|should i send|how do i answer/i,
     reply:
-      'Let’s find words that are honest without bargaining. What do you want them to understand — and what are you afraid they’ll think?',
+      'Let’s find words that are honest without bargaining. What do you want them to understand, and what are you afraid they’ll think?',
   },
   {
     test: /reject|unwanted|not enough|deprioriti|abandon|left out/i,
@@ -40,7 +40,7 @@ const RULES = [
   {
     test: /clarity|ask for|need to know|certainty|reassur/i,
     reply:
-      'Asking for clarity isn’t needy — it’s honest. What’s the smallest true thing you could say to open that door?',
+      'Asking for clarity isn’t needy. It’s honest. What’s the smallest true thing you could say to open that door?',
   },
   {
     test: /overthink|reading too much|analy|every detail|what did.*mean/i,
@@ -70,7 +70,7 @@ const RULES = [
   {
     test: /numb|don'?t feel|feel nothing|empty|detached|shut down/i,
     reply:
-      'Numbness is protection, not absence — something decided feeling was unsafe for a while. What happened right before it went quiet?',
+      'Numbness is protection, not absence. Something decided feeling was unsafe for a while. What happened right before it went quiet?',
   },
   {
     test: /hope|hopeful|optimis|excited|good about|better lately/i,
@@ -80,17 +80,32 @@ const RULES = [
   {
     test: /chemistry|emotional safety|feels? safe|exciting|spark|intensity|drawn to/i,
     reply:
-      'Chemistry is loud; safety is quiet — and you were taught to trust the loud one. What does calm actually feel like in your body when someone is steady with you?',
+      'Chemistry is loud; safety is quiet, and you were taught to trust the loud one. What does calm actually feel like in your body when someone is steady with you?',
+  },
+  {
+    test: /can'?t name|feel off|feeling off|something'?s off|no words for|can'?t put.*words/i,
+    reply:
+      'Not being able to name it is still information. When did the “off” feeling start, and what was happening right before it crept in?',
+  },
+  {
+    test: /a choice|choices|decision|can'?t decide|avoid(ing)?|putting off|torn between/i,
+    reply:
+      'Avoidance usually means both options cost something. What are you afraid you’ll lose if you choose, and what are you already losing by not?',
+  },
+  {
+    test: /too much|taking up space|apolog(y|ies|ise|ize|ising|izing)?|keep saying sorry|shrink/i,
+    reply:
+      'Notice who first taught you your needs were too much. Taking up space was never the problem. Being asked to disappear was.',
   },
   {
     test: /thank|that help|makes sense|feel better|good point/i,
-    reply: 'I’m glad. Sit with it for a moment — you don’t have to solve everything tonight.',
+    reply: 'I’m glad. Sit with it for a moment. You don’t have to solve everything tonight.',
   },
 ]
 
 const FALLBACK = [
   'Tell me more about that. What happened just before you started feeling this way?',
-  'I’m here. Say it the way it actually feels — we can make sense of it together.',
+  'I’m here. Say it the way it actually feels. We can make sense of it together.',
   'Let’s start where it’s heaviest. What’s the part you keep coming back to?',
 ]
 
@@ -114,7 +129,7 @@ const CHIP_EXCHANGES = {
   reply: {
     user: 'Help me reply.',
     kael:
-      'Try something honest and low-pressure: “I want to give you space — I’d just love to know we’re okay. No rush.” It asks for clarity without making them wrong.',
+      'Try something honest and low-pressure: “I want to give you space. I’d just love to know we’re okay. No rush.” It asks for clarity without making them wrong.',
   },
   pattern: {
     user: 'Find the pattern.',
@@ -137,12 +152,12 @@ const MOOD_EXCHANGES = {
   hurt: {
     user: 'I’m feeling hurt.',
     kael:
-      'That’s worth taking seriously. Tell me what happened — and what it made you believe about where you stand with them.',
+      'That’s worth taking seriously. Tell me what happened, and what it made you believe about where you stand with them.',
   },
   hopeful: {
     user: 'I’m feeling hopeful, actually.',
     kael:
-      'Good. Hope is information too. What shifted — and what would you like to protect about this feeling?',
+      'Good. Hope is information too. What shifted, and what would you like to protect about this feeling?',
   },
   numb: {
     user: 'I feel kind of numb.',
@@ -157,7 +172,7 @@ const MOOD_EXCHANGES = {
   overwhelmed: {
     user: 'I’m overwhelmed.',
     kael:
-      'Let’s make it smaller. Name the one thing pressing on you most right now — we’ll start there, not everywhere.',
+      'Let’s make it smaller. Name the one thing pressing on you most right now. We’ll start there, not everywhere.',
   },
 }
 

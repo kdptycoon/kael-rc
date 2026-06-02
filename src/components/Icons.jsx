@@ -40,8 +40,11 @@ import {
   HeartBreak,
   SunHorizon,
   CloudFog,
+  CloudRain,
   Leaf,
   Waves,
+  Flag as PhFlag,
+  ArrowsClockwise,
   Lightbulb,
   Scales,
   Sun as PhSun,
@@ -95,6 +98,9 @@ export const Book = make(BookOpen)
 export const Bulb = make(Lightbulb)
 export const Balance = make(Scales)
 export const Wave = make(Waves)
+export const Cloud = make(CloudRain)
+export const Flag = make(PhFlag)
+export const Cycle = make(ArrowsClockwise)
 
 /* ---- you: moves + read ---- */
 export const Search = make(MagnifyingGlass)

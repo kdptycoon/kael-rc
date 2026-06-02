@@ -1,25 +1,27 @@
 import { motion } from 'framer-motion'
-import { Chat, Bulb, Balance, Wave, ChevronRight } from '../components/Icons.jsx'
+import { Bulb, Cloud, Flag, Wave, Cycle } from '../components/Icons.jsx'
 
-// Each moment carries a type (icon + label) and stays in chronological order,
-// so the spine reads as a timeline rather than a grouped-by-category list.
+// Each moment carries a type (icon + label). Every node looks the same — we don't
+// rank moments as big or small; the spine just holds them in order.
 const TYPES = {
-  shared: { label: 'Shared with Kael', Icon: Chat },
   breakthrough: { label: 'Breakthrough', Icon: Bulb },
-  decision: { label: 'Decision', Icon: Balance },
-  chapter: { label: 'Active chapter', Icon: Wave },
+  season: { label: 'Hard season', Icon: Cloud },
+  milestone: { label: 'Milestone', Icon: Flag },
+  shift: { label: 'Shift', Icon: Wave },
+  turning: { label: 'Turning point', Icon: Cycle },
 }
 
+// Newest first. `body` uses line breaks for a short, journal-like stanza.
 const MOMENTS = [
   {
     id: 'fight-a',
-    type: 'shared',
-    now: true,
-    title: 'The fight with A',
-    sub: 'It escalated faster than you expected, and you were left holding the aftermath on your own.',
-    date: 'Today',
+    type: 'season',
+    mon: 'May',
+    day: '30',
+    title: 'The fight that’s still settling',
+    body: 'It escalated faster than you could hold.\nYou’re still sorting what was yours to carry.',
     detail: {
-      eyebrow: 'Shared with Kael · Today',
+      eyebrow: 'Hard season · May 30',
       title: 'You told Kael about the fight with A.',
       sections: [
         {
@@ -44,11 +46,12 @@ const MOMENTS = [
   {
     id: 'delayed-replies',
     type: 'breakthrough',
-    title: 'Why slow replies sting',
-    sub: 'A delay stopped being a delay — within seconds it became “I don’t matter to them.” You traced where that comes from.',
-    date: 'Yesterday',
+    mon: 'May',
+    day: '27',
+    title: 'You named the fear out loud',
+    body: 'A slow reply stopped meaning “busy.”\nYou caught the old story it feeds — and said it plainly.',
     detail: {
-      eyebrow: 'Breakthrough · Yesterday',
+      eyebrow: 'Breakthrough · May 27',
       title: 'Delayed replies trigger your fear of being deprioritized.',
       sections: [
         {
@@ -72,12 +75,13 @@ const MOMENTS = [
   },
   {
     id: 'ask-clarity',
-    type: 'decision',
-    title: 'You asked for clarity',
-    sub: 'Instead of running the loop in your head, you said the true thing out loud and asked for what you needed.',
-    date: 'May 18',
+    type: 'milestone',
+    mon: 'May',
+    day: '21',
+    title: 'You asked instead of spiraling',
+    body: 'You said the true thing out loud.\nNo bargaining, no waiting until you felt sure.',
     detail: {
-      eyebrow: 'Decision · May 18',
+      eyebrow: 'Milestone · May 21',
       title: 'You asked for clarity instead of silently overthinking.',
       sections: [
         {
@@ -101,12 +105,13 @@ const MOMENTS = [
   },
   {
     id: 'chemistry-safety',
-    type: 'chapter',
-    title: 'Chemistry vs. safety',
-    sub: 'Learning to tell the rush of intensity apart from the quiet of actually feeling safe with someone.',
-    date: 'May 16',
+    type: 'shift',
+    mon: 'May',
+    day: '16',
+    title: 'Chemistry stopped running the show',
+    body: 'You started asking what feels calm,\nnot just what feels electric.',
     detail: {
-      eyebrow: 'Active chapter · Since May 16',
+      eyebrow: 'Shift · since May 16',
       title: 'Separating chemistry from emotional safety.',
       sections: [
         {
@@ -128,15 +133,53 @@ const MOMENTS = [
       },
     },
   },
+  {
+    id: 'stopped-performing',
+    type: 'turning',
+    mon: 'May',
+    day: '9',
+    title: 'You stopped performing “fine”',
+    body: 'One honest preference, said plainly.\nSomething in you stopped shrinking to fit.',
+    detail: {
+      eyebrow: 'Turning point · May 9',
+      title: 'You stopped saying “I’m fine” when you weren’t.',
+      sections: [
+        {
+          label: 'What shifted',
+          text: 'For once you let a real preference be known instead of going quiet and agreeable. You stopped editing yourself down to stay easy to love.',
+        },
+        {
+          label: 'Why it mattered',
+          text: 'Every “I’m fine” had been a small disappearance. Saying the true thing was you betting you could be wanted as you actually are.',
+        },
+        {
+          label: 'Keep going',
+          text: 'Notice the next time “fine” rises automatically. One honest sentence is how you learn who can hold the real you.',
+        },
+      ],
+      cta: {
+        label: 'Reflect this with Kael',
+        message: 'I want to stop saying I’m fine when I’m not and pretending I want less than I do.',
+      },
+    },
+  },
 ]
+
+function today() {
+  return new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+  })
+}
 
 export default function JourneyScreen({ onOpenSheet }) {
   return (
     <div className="screen-scroll journey-scroll">
       <section className="journey-intro">
-        <span className="eyebrow">Your story with Kael</span>
-        <h1>Journey</h1>
-        <p>The moments you’ve lived, shared, and understood.</p>
+        <span className="eyebrow">{today()}</span>
+        <h1>Your journey</h1>
+        <p>Everything Kael has watched unfold.</p>
       </section>
 
       <div className="timeline">
@@ -145,26 +188,23 @@ export default function JourneyScreen({ onOpenSheet }) {
           return (
             <motion.button
               key={m.id}
-              className={`j-moment${m.now ? ' now' : ''}`}
+              className="j-moment"
               onClick={() => onOpenSheet?.(m.detail)}
               whileTap={{ scale: 0.99 }}
               transition={{ type: 'spring', stiffness: 400, damping: 28 }}
             >
-              <span className="j-node">
-                <Icon size={16} />
+              <span className="j-rail">
+                <span className="j-mon">{m.mon}</span>
+                <span className="j-day">{m.day}</span>
               </span>
-              <span className="j-head">
-                <span className="j-kind">{label}</span>
-                <span className="j-date">{m.date}</span>
-              </span>
+              <span className="j-node" />
               <span className="j-card">
-                <span className="j-text">
-                  <span className="j-title">{m.title}</span>
-                  <span className="j-sub">{m.sub}</span>
+                <span className="j-kind">
+                  <Icon size={14} sw={1.6} />
+                  {label}
                 </span>
-                <span className="j-go">
-                  <ChevronRight size={16} sw={1.6} />
-                </span>
+                <span className="j-title">{m.title}</span>
+                <span className="j-body">{m.body}</span>
               </span>
             </motion.button>
           )

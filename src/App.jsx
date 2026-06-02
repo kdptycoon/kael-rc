@@ -39,7 +39,13 @@ function ScreenView({ tab, messages, typing, handlers }) {
         />
       )
     case 'you':
-      return <YouScreen onNavigate={handlers.goChat} onOpenSheet={handlers.openSheet} />
+      return (
+        <YouScreen
+          onNavigate={handlers.goChat}
+          onOpenSheet={handlers.openSheet}
+          onPrompt={handlers.startFromPrompt}
+        />
+      )
     case 'journey':
       return <JourneyScreen onNavigate={handlers.goChat} onOpenSheet={handlers.openSheet} />
     case 'learn':

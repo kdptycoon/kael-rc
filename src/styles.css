@@ -27,6 +27,9 @@
   --line-strong: #e2ddd1;
   --field: #f1efe8;
 
+  --badge-fill: #f6f0e4;
+  --badge-ink: #6e5638;
+
   --btn: #1b1a17;
   --btn-ink: #f7f5f0;
 
@@ -66,6 +69,9 @@
   --line-2: #29251d;
   --line-strong: #332f25;
   --field: #211e17;
+
+  --badge-fill: #322d23;
+  --badge-ink: #c4b186;
 
   --btn: #f1ede3;
   --btn-ink: #15140f;
@@ -809,17 +815,13 @@ svg {
 
 /* Learn screen */
 .learn-head {
-  padding: 14px 26px 8px;
-}
-.learn-head .eyebrow {
-  display: block;
-  margin-bottom: 13px;
+  padding: 18px 24px 0;
 }
 .learn-head h1 {
   font-family: var(--serif);
   font-weight: 300;
-  font-size: 39px;
-  line-height: 1.02;
+  font-size: 35px;
+  line-height: 1.08;
   letter-spacing: -0.022em;
   color: var(--ink);
 }
@@ -828,6 +830,72 @@ svg {
   font-size: 15px;
   line-height: 1.5;
   color: var(--ink-2);
+  text-wrap: pretty;
+}
+.learn-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 24px;
+  margin-top: 16px;
+}
+.learn-search {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 46px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--field);
+  border: 1px solid var(--line);
+  color: var(--ink-3);
+}
+.learn-search svg {
+  flex: none;
+}
+.learn-filter {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  background: var(--field);
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+.learn-filter[data-active='true'] {
+  background: var(--invert-bg);
+  border-color: var(--invert-bg);
+  color: var(--invert-ink);
+}
+.learn-body {
+  padding: 16px 24px 30px;
+}
+.learn-search-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink);
+  letter-spacing: -0.003em;
+}
+.learn-search-input::placeholder {
+  color: var(--ink-3);
+}
+.learn-search-input:focus {
+  outline: none;
+}
+.learn-empty {
+  padding: 24px 2px 10px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--ink-3);
   text-wrap: pretty;
 }
 /* Learn: featured read — inverted hero, Kael-curated */
@@ -853,7 +921,17 @@ svg {
   border-color: var(--line-strong);
   box-shadow: var(--shadow-float);
 }
-.lc-tag {
+.lc-open {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.lc-kicker {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -863,8 +941,8 @@ svg {
   text-transform: uppercase;
   color: var(--ink-3);
 }
-.lc-tag svg {
-  color: var(--ink-2);
+.lc-kicker svg {
+  color: var(--badge-ink);
 }
 .lc-title {
   display: block;
@@ -877,11 +955,11 @@ svg {
   color: var(--ink);
   text-wrap: pretty;
 }
-.lc-desc {
+.lc-quote {
   display: block;
   margin-top: 10px;
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: 15.5px;
+  line-height: 1.5;
   color: var(--ink-2);
   text-wrap: pretty;
 }
@@ -905,10 +983,18 @@ svg {
   flex: none;
   display: grid;
   place-items: center;
+  padding: 5px;
+  margin: -5px;
+  background: none;
+  border: 0;
+  cursor: pointer;
   color: var(--ink-3);
-  transition: color 0.18s ease;
+  transition: color 0.16s ease;
 }
-.lcard:hover .lc-save {
+.lc-save:hover {
+  color: var(--ink-2);
+}
+.lc-save[data-saved='true'] {
   color: var(--ink);
 }
 
@@ -1227,13 +1313,20 @@ svg {
 /* ============================================================
    YOU
    ============================================================ */
-.you-scroll {
-  padding: 8px 0 30px;
+.mirror-scroll {
+  padding: 8px 0 32px;
 }
-.you-head {
+.mirror-head {
   padding: 16px 24px 4px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
 }
-.you-head h1 {
+.mirror-head-l {
+  min-width: 0;
+}
+.mirror-head h1 {
   font-family: var(--serif);
   font-weight: 300;
   font-size: 36px;
@@ -1241,11 +1334,816 @@ svg {
   letter-spacing: -0.02em;
   color: var(--ink);
 }
-.you-head p {
-  margin-top: 12px;
+.mirror-head p {
+  margin-top: 11px;
   font-size: 15px;
-  color: var(--ink-2);
   line-height: 1.5;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+.mirror-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.mirror-status .live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink-3);
+}
+
+/* Read meter — the read rebuilds every 100 chats; the ring shows progress to the next */
+.read-ring {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  flex: none;
+  margin-top: 3px;
+}
+.rr-svg {
+  width: 50px;
+  height: 50px;
+  transform: rotate(-90deg);
+}
+.rr-track {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 3.4;
+}
+.rr-arc {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 3.4;
+  stroke-linecap: round;
+  stroke-dasharray: 119.38;
+  stroke-dashoffset: 42.98;
+}
+.rr-pct {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.rr-unit {
+  font-size: 8.5px;
+  font-weight: 600;
+  margin-left: 0.5px;
+  color: var(--ink-3);
+}
+.read-cadence {
+  margin: 9px 24px 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--ink-3);
+  text-wrap: pretty;
+}
+
+/* ---- Summary snapshot (the screenshot) ---- */
+.snapshot {
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: 22px;
+  padding: 20px 21px 18px;
+  box-shadow: var(--shadow-float);
+}
+.snap-eyebrow {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.snap-headline {
+  margin-top: 13px;
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.24;
+  letter-spacing: -0.016em;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.snap-block {
+  margin-top: 17px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.snap-label {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+/* attachment spectrum */
+.snap-track {
+  position: relative;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--line-strong);
+  margin-top: 13px;
+}
+.snap-marker {
+  position: absolute;
+  top: 50%;
+  left: 27%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--ink);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 4px var(--surface);
+}
+.snap-ends {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+/* patterns bar chart */
+.snap-bars {
+  margin-top: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.snap-bar-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.snap-bar-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+}
+.snap-bar-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+.snap-bar-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--line-strong);
+  overflow: hidden;
+}
+.snap-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--ink);
+}
+/* trigger chips */
+.snap-chips {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.snap-chip {
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-2);
+  letter-spacing: -0.003em;
+}
+/* needs — a finite set Kael picks from; iconed rows in a 2-up grid */
+.snap-needs {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+.snap-need-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 13px;
+  background: var(--field);
+  border: 1px solid var(--line);
+}
+.nr-ic {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  display: grid;
+  place-items: center;
+  color: var(--ink-2);
+}
+.nr-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.003em;
+}
+
+/* ---- Kael's read: tappable section cards ---- */
+.mhero {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: 22px;
+  padding: 20px 21px 18px;
+  box-shadow: var(--shadow-float);
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.mhero:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-strong);
+}
+.mhero-eyebrow {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.mhero-headline {
+  display: block;
+  margin-top: 13px;
+  font-family: var(--serif);
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 1.22;
+  letter-spacing: -0.018em;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.mhero-support {
+  display: block;
+  margin-top: 12px;
+  font-family: var(--serif);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+.mhero-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--ink-2);
+}
+.msection {
+  display: block;
+  margin-bottom: 3px;
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+}
+.mlist {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.mcard {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: 18px;
+  padding: 16px 17px;
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.mcard:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-float);
+}
+.mcard-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.mcard-title {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.mcard-go {
+  flex: none;
+  color: var(--ink-3);
+}
+.mcard-count {
+  flex: none;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+.mcard-detail {
+  display: block;
+  margin-top: 9px;
+  font-family: var(--serif);
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+.mcard-feel {
+  display: block;
+  margin-top: 11px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.mcard .snap-track {
+  margin-top: 14px;
+}
+.mcard .snap-bar-track {
+  margin-top: 12px;
+}
+.mcard .snap-chips {
+  margin-top: 13px;
+}
+.mcard .snap-needs {
+  margin-top: 13px;
+}
+.mcard .snap-values {
+  margin-top: 13px;
+}
+
+/* Growth edge — inverted focal box */
+.growth-edge {
+  background: var(--invert-bg);
+  color: var(--invert-ink);
+  border-radius: 22px;
+  padding: 22px 22px 20px;
+  box-shadow: var(--shadow-float);
+}
+.ge-eyebrow {
+  display: block;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  letter-spacing: -0.005em;
+  color: var(--invert-ink-2);
+}
+.ge-text {
+  margin-top: 11px;
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 400;
+  line-height: 1.32;
+  letter-spacing: -0.012em;
+  color: var(--invert-ink);
+  text-wrap: pretty;
+}
+.ge-cta {
+  margin-top: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 20px;
+  border-radius: 999px;
+  background: var(--invert-ink);
+  color: var(--invert-bg);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  transition: transform 0.18s ease;
+}
+.ge-cta:hover {
+  transform: translateY(-1px);
+}
+
+/* Beliefs — the cognitions under the patterns, each paired with its reframe */
+.belief-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.belief-quote {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16.5px;
+  line-height: 1.36;
+  letter-spacing: -0.008em;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.belief-truth {
+  display: block;
+  margin-top: 12px;
+  padding-top: 11px;
+  border-top: 1px solid var(--line);
+}
+.bt-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.bt-text {
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+
+/* Values — a finite, affirming grid of what you’re drawn to */
+.snap-values {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.value-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 14px 13px 15px;
+  border-radius: 15px;
+  background: var(--field);
+  border: 1px solid var(--line);
+}
+.vt-ic {
+  width: 33px;
+  height: 33px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  display: grid;
+  place-items: center;
+  color: var(--ink-2);
+}
+.vt-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.vt-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.vt-gloss {
+  font-size: 11.5px;
+  line-height: 1.3;
+  color: var(--ink-3);
+}
+[data-theme='dark'] .value-tile {
+  background: #2c2820;
+  border-color: var(--line-strong);
+}
+[data-theme='dark'] .kread-callout {
+  background: #2c2820;
+  border-color: var(--line-strong);
+}
+
+/* ---- The read (long-form prose) ---- */
+.kread {
+  padding-top: 2px;
+}
+.kread-lead {
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.62;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.kread-lead::first-letter {
+  font-size: 50px;
+  line-height: 0.86;
+  float: left;
+  font-weight: 500;
+  padding: 5px 9px 0 0;
+  color: var(--ink);
+}
+.kread h2 {
+  margin-top: 36px;
+  font-family: var(--serif);
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.018em;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.kread h3 {
+  margin-top: 24px;
+  font-family: var(--serif);
+  font-size: 18.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.kread-p {
+  margin-top: 11px;
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.62;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.kread-p .said {
+  font-style: italic;
+  color: var(--ink-2);
+}
+.kread-quote {
+  margin: 22px 0 4px;
+  padding-left: 16px;
+  border-left: 2px solid var(--line-strong);
+  font-family: var(--serif);
+  font-size: 19px;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.kread-callout {
+  margin-top: 16px;
+  display: flex;
+  gap: 11px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+.kread-callout-mark {
+  flex: none;
+  margin-top: 1px;
+  color: var(--ink-3);
+}
+.kread-callout-text {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+.kread-cta {
+  margin-top: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 20px;
+  border-radius: 999px;
+  background: var(--btn);
+  color: var(--btn-ink);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  box-shadow: var(--shadow-btn);
+  transition: transform 0.18s ease;
+}
+.kread-cta:hover {
+  transform: translateY(-1px);
+}
+
+/* Recurring patterns */
+.patterns {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.pattern {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  padding: 15px 16px 13px;
+  border-radius: 18px;
+  border: 1px solid var(--line-2);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+.pattern:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-float);
+}
+.pat-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.pat-name {
+  font-size: 15.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.pat-meter {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+}
+.pat-meter .m-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--line-strong);
+}
+.pat-meter .m-dot.on {
+  background: var(--ink-2);
+}
+.pat-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+.pat-foot {
+  margin-top: 3px;
+  padding-top: 11px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.pat-triggers {
+  font-size: 11.5px;
+  color: var(--ink-3);
+  min-width: 0;
+}
+.pat-count {
+  flex: none;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* What activates you */
+.trigs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.trig {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-2);
+  letter-spacing: -0.003em;
+}
+
+/* The need underneath */
+.need {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+/* People & dynamics */
+.dynamics {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.dyn {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  padding: 15px 16px 14px;
+  border-radius: 18px;
+  border: 1px solid var(--line-2);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+.dyn:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-float);
+}
+.dyn-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.dyn-who {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.dyn-go {
+  flex: none;
+  color: var(--ink-3);
+}
+.dyn-summary {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+.dyn-feel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* What you're learning */
+.learning {
+  background: var(--invert-bg);
+  color: var(--invert-ink);
+  border-radius: 22px;
+  padding: 20px 21px 16px;
+  box-shadow: var(--shadow-float);
+}
+.learn-text {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1.32;
+  letter-spacing: -0.01em;
+  color: var(--invert-ink);
+  text-wrap: pretty;
+}
+.learn-cta {
+  margin-top: 16px;
+  padding-top: 15px;
+  border-top: 1px solid var(--invert-line);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--invert-ink);
 }
 
 .loops {

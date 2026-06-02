@@ -7,6 +7,7 @@ export const LESSONS = [
     title: 'Why inconsistent warmth feels addictive',
     topic: 'Attachment',
     tag: 'For the hot-and-cold',
+    quote: 'What you call spark is often just anxiety wearing a more flattering name.',
     read: '9 min read',
     dek: 'The science of why “sometimes” hooks you harder than “always.”',
     body: [
@@ -21,6 +22,7 @@ export const LESSONS = [
     title: 'The protest behaviors no one warns you about',
     topic: 'Patterns',
     tag: 'For when you chase',
+    quote: 'Protest behavior is a bid for reassurance in disguise.',
     read: '8 min read',
     dek: 'Double-texting, scorekeeping, going quiet to be noticed, and what they’re really asking for.',
     body: [
@@ -35,6 +37,7 @@ export const LESSONS = [
     title: 'How to ask for clarity without bargaining',
     topic: 'Communication',
     tag: 'For when you need to know',
+    quote: 'Every day you don’t ask, you fund the not-knowing with your peace.',
     read: '7 min read',
     dek: 'A way to ask the real question that doesn’t hand away your dignity.',
     body: [
@@ -49,6 +52,7 @@ export const LESSONS = [
     title: 'What a silence actually means',
     topic: 'Overthinking',
     tag: 'For a silent phone',
+    quote: 'The silence becomes a verdict before any evidence arrives.',
     read: '6 min read',
     dek: 'Your mind will pick the cruelest interpretation. Here’s how to slow it down.',
     body: [
@@ -63,6 +67,7 @@ export const LESSONS = [
     title: 'The quiet cost of abandoning yourself to be chosen',
     topic: 'Self-worth',
     tag: 'For when you shrink',
+    quote: 'A relationship that survives only because you disappeared isn’t choosing you.',
     read: '11 min read',
     dek: 'Shrinking to keep someone is a debt that always comes due.',
     body: [
@@ -78,6 +83,7 @@ export const LESSONS = [
     title: 'Calming the body before the conversation',
     topic: 'Regulation',
     tag: 'Before a hard talk',
+    quote: 'Urgency is the anxiety talking, and it rarely produces your clearest self.',
     read: '6 min read',
     dek: 'You can’t think clearly while your nervous system is bracing for impact.',
     body: [

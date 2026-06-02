@@ -45,7 +45,15 @@ import {
   Waves,
   CircleHalf,
   Mountains,
-  Heart,
+  Heart as PhHeart,
+  HandHeart as PhHandHeart,
+  ShieldCheck as PhShield,
+  Anchor as PhAnchor,
+  Thermometer as PhThermometer,
+  Footprints as PhFootprints,
+  Phone as PhPhone,
+  ArrowsIn as PhArrowsIn,
+  Wind as PhWind,
   Flag as PhFlag,
   ArrowsClockwise,
   Lightbulb,
@@ -124,13 +132,26 @@ export const MoodNumb = make(CloudFog)
 export const MoodCalm = make(Leaf)
 export const MoodOverwhelmed = make(Waves)
 
+/* ---- learn: per-topic seals ---- */
+export const Thermometer = make(PhThermometer)
+export const Footprints = make(PhFootprints)
+export const Phone = make(PhPhone)
+export const Shrink = make(PhArrowsIn)
+export const Wind = make(PhWind)
+
 /* ---- home: inner weather ---- */
 export const Clear = make(PhSun)
 export const Steady = make(CircleHalf)
-export const Tender = make(Heart)
+export const Tender = make(PhHeart)
 export const Foggy = make(CloudFog)
 export const Restless = make(Mountains)
 export const Heavy = make(CloudRain)
+
+/* ---- mirror: needs ---- */
+export const Heart = make(PhHeart)
+export const HandHeart = make(PhHandHeart)
+export const Shield = make(PhShield)
+export const Anchor = make(PhAnchor)
 
 /* ---- theme toggle ---- */
 export const Sun = make(PhSun)

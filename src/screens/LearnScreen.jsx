@@ -1,44 +1,117 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Sparkle, Bookmark } from '../components/Icons.jsx'
+import { Sparkle, Bookmark, Search } from '../components/Icons.jsx'
 import { LESSONS } from '../lessons.js'
 
-// Every read is chosen for where the user is — so the whole screen is one
-// personalized stack: a spark-tagged personal framing, a title, a description.
+function LessonCard({ lesson, saved, onToggleSave, onOpen }) {
+  return (
+    <div className="lcard">
+      <motion.button
+        className="lc-open"
+        onClick={() => onOpen?.(lesson.id)}
+        whileTap={{ scale: 0.99 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+      >
+        <span className="lc-kicker">
+          <Sparkle size={13} sw={1.6} />
+          {lesson.tag}
+        </span>
+        <span className="lc-title">{lesson.title}</span>
+        <span className="lc-quote">{lesson.quote}</span>
+      </motion.button>
+      <div className="lc-foot">
+        <span className="lc-meta">{lesson.read}</span>
+        <motion.button
+          className="lc-save"
+          data-saved={saved}
+          onClick={() => onToggleSave?.(lesson.id)}
+          whileTap={{ scale: 0.84 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 26 }}
+          aria-label={saved ? 'Remove from saved' : 'Save for later'}
+        >
+          <Bookmark size={16} weight={saved ? 'fill' : 'regular'} />
+        </motion.button>
+      </div>
+    </div>
+  )
+}
+
 export default function LearnScreen({ onOpenLesson }) {
+  const [query, setQuery] = useState('')
+  const [view, setView] = useState('for-you')
+  const [saved, setSaved] = useState(() => new Set())
+
+  const toggleSave = (id) =>
+    setSaved((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+
+  const q = query.trim().toLowerCase()
+  let list = view === 'saved' ? LESSONS.filter((l) => saved.has(l.id)) : LESSONS
+  if (q) {
+    list = list.filter((l) =>
+      `${l.title} ${l.topic} ${l.tag} ${l.dek} ${l.quote}`.toLowerCase().includes(q),
+    )
+  }
+
+  const empty =
+    list.length > 0
+      ? null
+      : view === 'saved' && saved.size === 0
+        ? 'Nothing saved yet. Tap the ribbon on any read to keep it here.'
+        : 'No readings match that. Try another word.'
+
   return (
     <div className="screen-scroll learn-scroll">
       <header className="learn-head">
-        <span className="eyebrow">Reading room</span>
-        <h1>Learn</h1>
+        <h1>The Reading Room</h1>
         <p>In-depth reads, chosen for where you are right now.</p>
       </header>
 
-      <section className="block pad">
-        <div className="lessons-stack">
-          {LESSONS.map((l) => (
-            <motion.button
-              key={l.id}
-              className="lcard"
-              onClick={() => onOpenLesson?.(l.id)}
-              whileTap={{ scale: 0.99 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-            >
-              <span className="lc-tag">
-                <Sparkle size={13} sw={1.6} />
-                {l.tag}
-              </span>
-              <span className="lc-title">{l.title}</span>
-              <span className="lc-desc">{l.dek}</span>
-              <span className="lc-foot">
-                <span className="lc-meta">{l.read}</span>
-                <span className="lc-save" aria-hidden="true">
-                  <Bookmark size={16} sw={1.6} />
-                </span>
-              </span>
-            </motion.button>
-          ))}
+      <div className="learn-bar">
+        <div className="learn-search">
+          <Search size={17} sw={1.7} />
+          <input
+            className="learn-search-input"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search readings…"
+            aria-label="Search readings"
+          />
         </div>
-      </section>
+        <motion.button
+          className="learn-filter"
+          data-active={view === 'saved'}
+          onClick={() => setView((v) => (v === 'saved' ? 'for-you' : 'saved'))}
+          whileTap={{ scale: 0.92 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 28 }}
+          aria-pressed={view === 'saved'}
+          aria-label={view === 'saved' ? 'Show all readings' : 'Show saved readings'}
+        >
+          <Bookmark size={18} weight={view === 'saved' ? 'fill' : 'regular'} />
+        </motion.button>
+      </div>
+
+      <div className="learn-body">
+        {empty ? (
+          <p className="learn-empty">{empty}</p>
+        ) : (
+          <div className="lessons-stack">
+            {list.map((l) => (
+              <LessonCard
+                key={l.id}
+                lesson={l}
+                saved={saved.has(l.id)}
+                onToggleSave={toggleSave}
+                onOpen={onOpenLesson}
+              />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

@@ -98,6 +98,16 @@ const RULES = [
       'Notice who first taught you your needs were too much. Taking up space was never the problem. Being asked to disappear was.',
   },
   {
+    test: /defensive|defensiveness|lash out|get sharp|turn sharp|snap at|feel dismissed/i,
+    reply:
+      'Sharpness is armor. When you feel dismissed, the jab is trying to protect something softer underneath. What were you most afraid they didn’t see in you?',
+  },
+  {
+    test: /say yes (first|before)|can'?t say no|feel trapped|resentf|people-?please|obligat/i,
+    reply:
+      'Saying yes before you check with yourself keeps the peace and quietly builds the resentment. What would you have said if you trusted they could handle your no?',
+  },
+  {
     test: /thank|that help|makes sense|feel better|good point/i,
     reply: 'I’m glad. Sit with it for a moment. You don’t have to solve everything tonight.',
   },

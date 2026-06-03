@@ -9,6 +9,7 @@ import LearnScreen from './screens/LearnScreen.jsx'
 import LessonScreen from './screens/LessonScreen.jsx'
 import ComponentLibrary from './screens/ComponentLibrary.jsx'
 import BrandGuide from './screens/BrandGuide.jsx'
+import StoreScreens from './screens/StoreScreens.jsx'
 import { Sparkle, Sun, Moon, Download, Grid } from './components/Icons.jsx'
 import { kaelReply, chipExchange, moodExchange } from './kael.js'
 import { getLesson } from './lessons.js'
@@ -233,9 +234,22 @@ export default function App() {
               >
                 Brand
               </button>
+              <button
+                className="studio-tab"
+                data-on={studioTab === 'store'}
+                onClick={() => setStudioTab('store')}
+              >
+                App Store
+              </button>
             </div>
             <div className="studio-body">
-              {studioTab === 'components' ? <ComponentLibrary /> : <BrandGuide />}
+              {studioTab === 'components' ? (
+                <ComponentLibrary />
+              ) : studioTab === 'brand' ? (
+                <BrandGuide />
+              ) : (
+                <StoreScreens />
+              )}
             </div>
           </div>
         ) : (

@@ -496,6 +496,150 @@ svg {
   color: var(--ink-3);
   font-variant-numeric: tabular-nums;
 }
+
+/* App Store screenshot frames */
+.store-page {
+  max-width: 1220px;
+}
+.store-grid {
+  --ps: 0.36;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+  gap: 34px 24px;
+  justify-items: center;
+}
+.store-cell {
+  width: calc(1290px * var(--ps));
+}
+.store-cell-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.scb-name {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.scb-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+.scb-btn {
+  min-width: 30px;
+  padding: 5px 9px;
+  border-radius: 8px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-2);
+  background: var(--field);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  transition: border-color 0.16s ease, color 0.16s ease;
+}
+.scb-btn:hover {
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+.scb-png {
+  color: var(--ink);
+}
+.store-scaler {
+  position: relative;
+  width: calc(1290px * var(--ps));
+  height: calc(2796px * var(--ps));
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-card);
+}
+.store-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1290px;
+  height: 2796px;
+  transform: scale(var(--ps));
+  transform-origin: top left;
+  background: #f0ebe1;
+  overflow: hidden;
+}
+.store-titleblock {
+  position: absolute;
+  top: 140px;
+  left: 0;
+  right: 0;
+  padding: 0 80px;
+  text-align: center;
+}
+.st-logo-name {
+  display: block;
+  font-family: var(--serif);
+  font-size: 90px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 30px;
+}
+.st-rule {
+  display: block;
+  width: 76px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--ink);
+  opacity: 0.2;
+  margin: 0 auto 36px;
+}
+.st-title {
+  display: block;
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 112px;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.st-title.hero {
+  font-size: 150px;
+}
+.store-device {
+  position: absolute;
+  left: 424px;
+  width: 442px;
+  transform-origin: top center;
+  transform: scale(var(--dev-scale, 2.4));
+}
+.store-phone {
+  width: 442px;
+  padding: 6px;
+  background: #0d0c0a;
+  border-radius: 52px;
+  box-shadow: 0 26px 60px -28px rgba(20, 18, 14, 0.4);
+}
+.store-phone[data-outline='white'] {
+  background: #ffffff;
+  box-shadow: 0 26px 60px -28px rgba(20, 18, 14, 0.26), inset 0 0 0 1px rgba(20, 18, 14, 0.08);
+}
+.ed {
+  cursor: text;
+  border-radius: 5px;
+  outline: none;
+}
+.ed:hover {
+  background: color-mix(in srgb, currentColor 8%, transparent);
+}
+.ed:focus {
+  outline: 2px solid color-mix(in srgb, currentColor 40%, transparent);
+  outline-offset: 3px;
+  background: transparent;
+}
 .toggle button[data-on='true'] {
   background: var(--studio-ink);
   color: var(--studio-bg);

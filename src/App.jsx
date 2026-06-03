@@ -7,7 +7,7 @@ import YouScreen from './screens/YouScreen.jsx'
 import JourneyScreen from './screens/JourneyScreen.jsx'
 import LearnScreen from './screens/LearnScreen.jsx'
 import LessonScreen from './screens/LessonScreen.jsx'
-import { Sparkle, Sun, Moon } from './components/Icons.jsx'
+import { Sparkle, Sun, Moon, Download } from './components/Icons.jsx'
 import { kaelReply, chipExchange, moodExchange } from './kael.js'
 import { getLesson } from './lessons.js'
 
@@ -55,7 +55,6 @@ function ScreenView({ tab, messages, typing, handlers }) {
         <HomeScreen
           onPrompt={handlers.startFromPrompt}
           onMood={handlers.bringMood}
-          messages={messages}
         />
       )
   }
@@ -142,6 +141,31 @@ export default function App() {
     sendText(message)
   }
 
+  async function downloadShot() {
+    const node = document.querySelector('.phone-screen')
+    if (!node) return
+    const { toPng } = await import('html-to-image')
+    const dataUrl = await toPng(node, {
+      pixelRatio: 3,
+      cacheBust: true,
+      style: { borderRadius: '0px' },
+    })
+    const name = `kael-${tab}-${theme}-${Date.now()}.png`
+    try {
+      const res = await fetch('/api/save-screenshot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, dataUrl }),
+      })
+      if (!res.ok) throw new Error('save failed')
+    } catch {
+      const a = document.createElement('a')
+      a.href = dataUrl
+      a.download = name
+      a.click()
+    }
+  }
+
   const handlers = {
     sendText,
     sendChip,
@@ -172,13 +196,18 @@ export default function App() {
             <div className="brand-caption">Relationship intelligence</div>
           </div>
         </div>
-        <div className="toggle" role="group" aria-label="Theme">
-          <button data-on={theme === 'light'} onClick={() => setTheme('light')} aria-label="Light">
-            <Sun size={17} />
+        <div className="top-controls">
+          <button className="shot-btn" onClick={downloadShot} aria-label="Download screen as PNG">
+            <Download size={17} sw={1.6} />
           </button>
-          <button data-on={theme === 'dark'} onClick={() => setTheme('dark')} aria-label="Dark">
-            <Moon size={17} />
-          </button>
+          <div className="toggle" role="group" aria-label="Theme">
+            <button data-on={theme === 'light'} onClick={() => setTheme('light')} aria-label="Light">
+              <Sun size={17} />
+            </button>
+            <button data-on={theme === 'dark'} onClick={() => setTheme('dark')} aria-label="Dark">
+              <Moon size={17} />
+            </button>
+          </div>
         </div>
       </motion.header>
 

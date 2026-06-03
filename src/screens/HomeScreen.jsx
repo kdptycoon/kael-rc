@@ -60,14 +60,6 @@ const FROM_KAEL = [
   },
 ]
 
-// Keeps the live row at 2–4 pills when the conversation is still short.
-const FALLBACK_PROMPTS = [
-  'I keep overthinking their last text',
-  'I don’t know where this is going',
-  'I keep saying yes then feel resentful',
-  'I feel like I’m too much',
-]
-
 function greeting() {
   const h = new Date().getHours()
   if (h < 5) return 'Late night'
@@ -81,30 +73,8 @@ function today() {
   return new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
 }
 
-export default function HomeScreen({ onPrompt, onMood, messages = [] }) {
+export default function HomeScreen({ onPrompt, onMood }) {
   const [draft, setDraft] = useState('')
-
-  // Live threads pulled from the actual conversation — most recent first.
-  const livePrompts = (() => {
-    const seen = new Set()
-    const out = []
-    for (let i = messages.length - 1; i >= 0 && out.length < 4; i--) {
-      const m = messages[i]
-      if (m.who !== 'user') continue
-      const full = m.text.trim()
-      const key = full.toLowerCase()
-      if (seen.has(key)) continue
-      seen.add(key)
-      out.push(full)
-    }
-    for (let i = 0; out.length < 2 && i < FALLBACK_PROMPTS.length; i++) {
-      const f = FALLBACK_PROMPTS[i]
-      if (seen.has(f.toLowerCase())) continue
-      seen.add(f.toLowerCase())
-      out.push(f)
-    }
-    return out
-  })()
 
   function submitDraft(e) {
     e.preventDefault()
@@ -191,23 +161,6 @@ export default function HomeScreen({ onPrompt, onMood, messages = [] }) {
                 <Icon size={16} sw={1.6} />
               </span>
               {label}
-            </motion.button>
-          ))}
-        </div>
-      </section>
-
-      <section className="block pad">
-        <span className="eyebrow">Continue a thread</span>
-        <div className="thread-pills block-gap">
-          {livePrompts.map((text) => (
-            <motion.button
-              key={text}
-              className="thread-pill"
-              onClick={() => onPrompt?.(text)}
-              whileTap={{ scale: 0.97 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 26 }}
-            >
-              {text}
             </motion.button>
           ))}
         </div>

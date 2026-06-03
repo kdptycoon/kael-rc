@@ -1,37 +1,32 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Sparkle, Bookmark, Search } from '../components/Icons.jsx'
+import { Bookmark, Search } from '../components/Icons.jsx'
 import { LESSONS } from '../lessons.js'
 
-function LessonCard({ lesson, saved, onToggleSave, onOpen }) {
+function LessonRow({ lesson, saved, onToggleSave, onOpen }) {
   return (
-    <div className="lcard">
+    <div className="litem">
       <motion.button
-        className="lc-open"
+        className="li-open"
         onClick={() => onOpen?.(lesson.id)}
-        whileTap={{ scale: 0.99 }}
-        transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+        whileTap={{ scale: 0.995 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
       >
-        <span className="lc-kicker">
-          <Sparkle size={13} sw={1.6} />
-          {lesson.tag}
-        </span>
-        <span className="lc-title">{lesson.title}</span>
-        <span className="lc-quote">{lesson.quote}</span>
+        <span className="li-kicker">{lesson.tag}</span>
+        <span className="li-title">{lesson.title}</span>
+        <span className="li-dek">{lesson.dek}</span>
+        <span className="li-meta">{lesson.read}</span>
       </motion.button>
-      <div className="lc-foot">
-        <span className="lc-meta">{lesson.read}</span>
-        <motion.button
-          className="lc-save"
-          data-saved={saved}
-          onClick={() => onToggleSave?.(lesson.id)}
-          whileTap={{ scale: 0.84 }}
-          transition={{ type: 'spring', stiffness: 500, damping: 26 }}
-          aria-label={saved ? 'Remove from saved' : 'Save for later'}
-        >
-          <Bookmark size={16} weight={saved ? 'fill' : 'regular'} />
-        </motion.button>
-      </div>
+      <motion.button
+        className="li-save"
+        data-saved={saved}
+        onClick={() => onToggleSave?.(lesson.id)}
+        whileTap={{ scale: 0.84 }}
+        transition={{ type: 'spring', stiffness: 500, damping: 26 }}
+        aria-label={saved ? 'Remove from saved' : 'Save for later'}
+      >
+        <Bookmark size={16} weight={saved ? 'fill' : 'regular'} />
+      </motion.button>
     </div>
   )
 }
@@ -99,9 +94,9 @@ export default function LearnScreen({ onOpenLesson }) {
         {empty ? (
           <p className="learn-empty">{empty}</p>
         ) : (
-          <div className="lessons-stack">
+          <div className="lessons-list">
             {list.map((l) => (
-              <LessonCard
+              <LessonRow
                 key={l.id}
                 lesson={l}
                 saved={saved.has(l.id)}

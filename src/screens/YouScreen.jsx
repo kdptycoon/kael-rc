@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ChevronRight, ArrowUpRight, Sparkle, Anchor, HandHeart, Shield, Quote } from '../components/Icons.jsx'
+import { ChevronRight, ArrowUpRight, Anchor, HandHeart, Shield, Quote } from '../components/Icons.jsx'
 
 // "Kael's read of you" — a visual summary where every section is a tappable card
 // that opens a bottom sheet to go deeper and talk to Kael. Curated data stands in
@@ -247,24 +247,12 @@ export default function YouScreen({ onOpenSheet, onPrompt }) {
   return (
     <div className="screen-scroll mirror-scroll">
       <header className="mirror-head">
-        <div className="mirror-head-l">
-          <h1>Kael’s read of you</h1>
-          <span className="mirror-status">
-            <span className="live-dot" />
-            Updated today
-          </span>
-        </div>
-        <div className="read-ring" role="img" aria-label="64% to your next read">
-          <svg viewBox="0 0 44 44" className="rr-svg">
-            <circle className="rr-track" cx="22" cy="22" r="19" />
-            <circle className="rr-arc" cx="22" cy="22" r="19" />
-          </svg>
-          <span className="rr-pct">
-            64<span className="rr-unit">%</span>
-          </span>
-        </div>
+        <h1>Kael’s read of you</h1>
+        <span className="mirror-status">
+          <span className="live-dot" />
+          Updated today
+        </span>
       </header>
-      <p className="read-cadence">Your read rebuilds every 100 chats, so it always reflects who you are now. 36 conversations until your next one.</p>
 
       {/* Hero */}
       <section className="block pad">
@@ -421,14 +409,6 @@ export default function YouScreen({ onOpenSheet, onPrompt }) {
       {/* Who you become with them */}
       <section className="block pad">
         <span className="msection">Who you become with them</span>
-        <div className="kread-callout block-gap">
-          <span className="kread-callout-mark">
-            <Sparkle size={15} sw={1.5} />
-          </span>
-          <p className="kread-callout-text">
-            A note: Kael never reads the other person, only who you become around them.
-          </p>
-        </div>
         <div className="mlist block-gap">
           {DYNAMICS.map((d) => (
             <motion.button

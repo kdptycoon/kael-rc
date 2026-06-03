@@ -898,103 +898,88 @@ svg {
   color: var(--ink-3);
   text-wrap: pretty;
 }
-/* Learn: featured read — inverted hero, Kael-curated */
-/* Learn: a personalized stack of reading cards (surface, theme-accurate) */
-.lessons-stack {
+/* Learn: cardless, newspaper-style reading list — hairline between entries */
+.lessons-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
 }
-.lcard {
-  display: block;
-  width: 100%;
-  text-align: left;
-  background: var(--surface);
-  border: 1px solid var(--line-2);
-  border-radius: 22px;
-  padding: 19px 20px 18px;
-  box-shadow: var(--shadow-card);
-  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+.litem {
+  position: relative;
+  border-top: 1px solid var(--line);
 }
-.lcard:hover {
-  transform: translateY(-2px);
-  border-color: var(--line-strong);
-  box-shadow: var(--shadow-float);
+.litem:first-child {
+  border-top: 0;
 }
-.lc-open {
+.li-open {
   display: block;
   width: 100%;
   text-align: left;
   background: none;
   border: 0;
-  padding: 0;
+  padding: 22px 38px 22px 0;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
-.lc-kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+.litem:first-child .li-open {
+  padding-top: 6px;
+}
+.li-kicker {
+  display: block;
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
-.lc-kicker svg {
-  color: var(--badge-ink);
-}
-.lc-title {
+.li-title {
   display: block;
-  margin-top: 12px;
+  margin-top: 9px;
   font-family: var(--serif);
-  font-size: 23px;
+  font-size: 22px;
   font-weight: 400;
-  line-height: 1.2;
-  letter-spacing: -0.014em;
+  line-height: 1.18;
+  letter-spacing: -0.015em;
   color: var(--ink);
   text-wrap: pretty;
 }
-.lc-quote {
+.li-dek {
   display: block;
-  margin-top: 10px;
-  font-size: 15.5px;
+  margin-top: 8px;
+  font-size: 14.5px;
   line-height: 1.5;
   color: var(--ink-2);
   text-wrap: pretty;
 }
-.lc-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 20px;
-  padding-top: 15px;
-  border-top: 1px solid var(--line);
-}
-.lc-meta {
+.li-meta {
+  display: block;
+  margin-top: 13px;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
-.lc-save {
-  flex: none;
+.li-save {
+  position: absolute;
+  top: 22px;
+  right: 0;
   display: grid;
   place-items: center;
-  padding: 5px;
-  margin: -5px;
+  padding: 6px;
+  margin: -6px;
   background: none;
   border: 0;
   cursor: pointer;
   color: var(--ink-3);
   transition: color 0.16s ease;
 }
-.lc-save:hover {
+.litem:first-child .li-save {
+  top: 6px;
+}
+.li-save:hover {
   color: var(--ink-2);
 }
-.lc-save[data-saved='true'] {
+.li-save[data-saved='true'] {
   color: var(--ink);
 }
 
@@ -1318,13 +1303,6 @@ svg {
 }
 .mirror-head {
   padding: 16px 24px 4px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-}
-.mirror-head-l {
-  min-width: 0;
 }
 .mirror-head h1 {
   font-family: var(--serif);
@@ -1357,57 +1335,6 @@ svg {
   height: 6px;
   border-radius: 50%;
   background: var(--ink-3);
-}
-
-/* Read meter — the read rebuilds every 100 chats; the ring shows progress to the next */
-.read-ring {
-  position: relative;
-  width: 50px;
-  height: 50px;
-  flex: none;
-  margin-top: 3px;
-}
-.rr-svg {
-  width: 50px;
-  height: 50px;
-  transform: rotate(-90deg);
-}
-.rr-track {
-  fill: none;
-  stroke: var(--line);
-  stroke-width: 3.4;
-}
-.rr-arc {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 3.4;
-  stroke-linecap: round;
-  stroke-dasharray: 119.38;
-  stroke-dashoffset: 42.98;
-}
-.rr-pct {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: var(--ink);
-}
-.rr-unit {
-  font-size: 8.5px;
-  font-weight: 600;
-  margin-left: 0.5px;
-  color: var(--ink-3);
-}
-.read-cadence {
-  margin: 9px 24px 0;
-  font-size: 12px;
-  line-height: 1.4;
-  color: var(--ink-3);
-  text-wrap: pretty;
 }
 
 /* ---- Summary snapshot (the screenshot) ---- */
@@ -1840,11 +1767,6 @@ svg {
   background: #2c2820;
   border-color: var(--line-strong);
 }
-[data-theme='dark'] .kread-callout {
-  background: #2c2820;
-  border-color: var(--line-strong);
-}
-
 /* ---- The read (long-form prose) ---- */
 .kread {
   padding-top: 2px;
@@ -1905,26 +1827,6 @@ svg {
   font-style: italic;
   line-height: 1.4;
   color: var(--ink);
-  text-wrap: pretty;
-}
-.kread-callout {
-  margin-top: 16px;
-  display: flex;
-  gap: 11px;
-  padding: 14px 16px;
-  border-radius: 14px;
-  background: var(--surface-2);
-  border: 1px solid var(--line);
-}
-.kread-callout-mark {
-  flex: none;
-  margin-top: 1px;
-  color: var(--ink-3);
-}
-.kread-callout-text {
-  font-size: 13.5px;
-  line-height: 1.5;
-  color: var(--ink-2);
   text-wrap: pretty;
 }
 .kread-cta {

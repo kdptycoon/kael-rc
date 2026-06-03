@@ -10,10 +10,11 @@ const CHIPS = [
 
 export default function ChatScreen({ messages = [], typing = false, onSend, onChip, onBack }) {
   const [draft, setDraft] = useState('')
-  const endRef = useRef(null)
+  const scrollRef = useRef(null)
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+    const el = scrollRef.current
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
   }, [messages, typing])
 
   function submit(e) {
@@ -40,7 +41,7 @@ export default function ChatScreen({ messages = [], typing = false, onSend, onCh
         </button>
       </header>
 
-      <div className="chat-scroll">
+      <div className="chat-scroll" ref={scrollRef}>
         <div className="chat-day">Today</div>
 
         {messages.map((m) =>
@@ -111,7 +112,6 @@ export default function ChatScreen({ messages = [], typing = false, onSend, onCh
           </div>
         )}
 
-        <div ref={endRef} />
       </div>
 
       <form className="composer" onSubmit={submit}>

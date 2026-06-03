@@ -515,6 +515,7 @@ svg {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
   margin-bottom: 10px;
 }
 .scb-name {
@@ -527,8 +528,19 @@ svg {
 .scb-actions {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  align-items: center;
   gap: 6px;
+}
+.scb-lbl {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-left: 6px;
+}
+.scb-lbl:first-child {
+  margin-left: 0;
 }
 .scb-btn {
   min-width: 30px;
@@ -549,6 +561,15 @@ svg {
 }
 .scb-png {
   color: var(--ink);
+}
+.scb-target {
+  min-width: 54px;
+  color: var(--invert-ink);
+  background: var(--invert-bg);
+  border-color: var(--invert-bg);
+}
+.scb-target:hover {
+  color: var(--invert-ink);
 }
 .store-scaler {
   position: relative;
@@ -572,7 +593,7 @@ svg {
 }
 .store-titleblock {
   position: absolute;
-  top: 140px;
+  top: var(--title-top, 140px);
   left: 0;
   right: 0;
   padding: 0 80px;
@@ -581,7 +602,7 @@ svg {
 .st-logo-name {
   display: block;
   font-family: var(--serif);
-  font-size: 90px;
+  font-size: calc(90px * var(--title-scale, 1));
   font-weight: 600;
   letter-spacing: -0.02em;
   color: var(--ink);
@@ -600,14 +621,14 @@ svg {
   display: block;
   font-family: var(--serif);
   font-weight: 600;
-  font-size: 112px;
+  font-size: calc(112px * var(--title-scale, 1));
   line-height: 1.02;
   letter-spacing: -0.035em;
   color: var(--ink);
   text-wrap: balance;
 }
 .st-title.hero {
-  font-size: 150px;
+  font-size: calc(150px * var(--title-scale, 1));
 }
 .store-device {
   position: absolute;

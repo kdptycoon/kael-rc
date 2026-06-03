@@ -147,10 +147,13 @@ const SHOTS = [
   { id: 'secure', theme: 'light', initialTab: 'you', title: 'Build healthy, secure relationships', devScale: 2.55, devTop: 700 },
 ]
 
-function StoreFrame({ shot, theme, outline, top, scale, frameRef }) {
+function StoreFrame({ shot, theme, outline, top, scale, titleTop, titleScale, frameRef }) {
   return (
     <div className="store-frame" data-theme="light" ref={frameRef}>
-      <div className="store-titleblock">
+      <div
+        className="store-titleblock"
+        style={{ '--title-top': `${titleTop}px`, '--title-scale': titleScale }}
+      >
         {shot.hero && (
           <>
             <Ed className="st-logo-name" html={shot.kael} />
@@ -159,7 +162,11 @@ function StoreFrame({ shot, theme, outline, top, scale, frameRef }) {
         )}
         <Ed as="h2" className={`st-title${shot.hero ? ' hero' : ''}`} html={shot.title} />
       </div>
-      <div className="store-device" style={{ top: `${top}px`, '--dev-scale': scale }}>
+      <div
+        className="store-device"
+        style={{ top: `${top}px`, '--dev-scale': scale }}
+        onMouseDown={(e) => e.preventDefault()}
+      >
         <MiniApp theme={theme} initialTab={shot.initialTab} outline={outline} />
       </div>
     </div>
@@ -169,8 +176,11 @@ function StoreFrame({ shot, theme, outline, top, scale, frameRef }) {
 export default function StoreScreens() {
   const [themes, setThemes] = useState(() => Object.fromEntries(SHOTS.map((s) => [s.id, s.theme])))
   const [outlines, setOutlines] = useState(() => Object.fromEntries(SHOTS.map((s) => [s.id, 'black'])))
+  const [targets, setTargets] = useState(() => Object.fromEntries(SHOTS.map((s) => [s.id, 'phone'])))
   const [cfg, setCfg] = useState(() =>
-    Object.fromEntries(SHOTS.map((s) => [s.id, { top: s.devTop, scale: s.devScale }])),
+    Object.fromEntries(
+      SHOTS.map((s) => [s.id, { top: s.devTop, scale: s.devScale, titleTop: 140, titleScale: 1 }]),
+    ),
   )
   const refs = useRef({})
 
@@ -179,6 +189,23 @@ export default function StoreScreens() {
   }
   function resize(id, d) {
     setCfg((c) => ({ ...c, [id]: { ...c[id], scale: Math.round((c[id].scale + d) * 100) / 100 } }))
+  }
+  function nudgeTitle(id, d) {
+    setCfg((c) => ({ ...c, [id]: { ...c[id], titleTop: c[id].titleTop + d } }))
+  }
+  function resizeTitle(id, d) {
+    setCfg((c) => ({ ...c, [id]: { ...c[id], titleScale: Math.round((c[id].titleScale + d) * 100) / 100 } }))
+  }
+  function toggleTarget(id) {
+    setTargets((t) => ({ ...t, [id]: t[id] === 'title' ? 'phone' : 'title' }))
+  }
+  function move(id, dir) {
+    if (targets[id] === 'title') nudgeTitle(id, dir * 30)
+    else nudge(id, dir * 40)
+  }
+  function size(id, dir) {
+    if (targets[id] === 'title') resizeTitle(id, dir * 0.06)
+    else resize(id, dir * 0.1)
   }
 
   async function download(id) {
@@ -220,10 +247,13 @@ export default function StoreScreens() {
             <div className="store-cell-bar">
               <span className="scb-name">{shot.id}</span>
               <span className="scb-actions">
-                <button className="scb-btn" onClick={() => nudge(shot.id, -40)} title="Move up">↑</button>
-                <button className="scb-btn" onClick={() => nudge(shot.id, 40)} title="Move down">↓</button>
-                <button className="scb-btn" onClick={() => resize(shot.id, -0.1)} title="Smaller">−</button>
-                <button className="scb-btn" onClick={() => resize(shot.id, 0.1)} title="Bigger">+</button>
+                <button className="scb-btn scb-target" onClick={() => toggleTarget(shot.id)} title="Toggle Title / Phone">
+                  {targets[shot.id] === 'title' ? 'Title' : 'Phone'}
+                </button>
+                <button className="scb-btn" onClick={() => move(shot.id, -1)} title="Up">↑</button>
+                <button className="scb-btn" onClick={() => move(shot.id, 1)} title="Down">↓</button>
+                <button className="scb-btn" onClick={() => size(shot.id, -1)} title="Smaller">−</button>
+                <button className="scb-btn" onClick={() => size(shot.id, 1)} title="Bigger">+</button>
                 <button className="scb-btn" onClick={() => toggleTheme(shot.id)}>
                   {themes[shot.id] === 'dark' ? 'Dark' : 'Light'}
                 </button>
@@ -240,6 +270,8 @@ export default function StoreScreens() {
                 outline={outlines[shot.id]}
                 top={cfg[shot.id].top}
                 scale={cfg[shot.id].scale}
+                titleTop={cfg[shot.id].titleTop}
+                titleScale={cfg[shot.id].titleScale}
                 frameRef={(el) => (refs.current[shot.id] = el)}
               />
             </div>

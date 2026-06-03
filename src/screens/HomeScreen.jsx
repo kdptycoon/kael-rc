@@ -92,12 +92,12 @@ export default function HomeScreen({ onPrompt, onMood }) {
           <h1>
             {greeting()},
             <br />
-            Sumit
+            Maya
           </h1>
           <span className="hg-sub">Day 142 with Kael · 6-day streak</span>
         </div>
         <span className="hg-avatar" aria-hidden="true">
-          S
+          M
         </span>
       </header>
 

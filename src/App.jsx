@@ -7,7 +7,9 @@ import YouScreen from './screens/YouScreen.jsx'
 import JourneyScreen from './screens/JourneyScreen.jsx'
 import LearnScreen from './screens/LearnScreen.jsx'
 import LessonScreen from './screens/LessonScreen.jsx'
-import { Sparkle, Sun, Moon, Download } from './components/Icons.jsx'
+import ComponentLibrary from './screens/ComponentLibrary.jsx'
+import BrandGuide from './screens/BrandGuide.jsx'
+import { Sparkle, Sun, Moon, Download, Grid } from './components/Icons.jsx'
 import { kaelReply, chipExchange, moodExchange } from './kael.js'
 import { getLesson } from './lessons.js'
 
@@ -62,6 +64,8 @@ function ScreenView({ tab, messages, typing, handlers }) {
 
 export default function App() {
   const [theme, setTheme] = useState('light')
+  const [view, setView] = useState('app')
+  const [studioTab, setStudioTab] = useState('components')
   const [tab, setTab] = useState('home')
   const [messages, setMessages] = useState(SEED)
   const [typing, setTyping] = useState(false)
@@ -150,20 +154,10 @@ export default function App() {
       cacheBust: true,
       style: { borderRadius: '0px' },
     })
-    const name = `kael-${tab}-${theme}-${Date.now()}.png`
-    try {
-      const res = await fetch('/api/save-screenshot', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, dataUrl }),
-      })
-      if (!res.ok) throw new Error('save failed')
-    } catch {
-      const a = document.createElement('a')
-      a.href = dataUrl
-      a.download = name
-      a.click()
-    }
+    const a = document.createElement('a')
+    a.href = dataUrl
+    a.download = `kael-${tab}-${theme}.png`
+    a.click()
   }
 
   const handlers = {
@@ -197,9 +191,19 @@ export default function App() {
           </div>
         </div>
         <div className="top-controls">
-          <button className="shot-btn" onClick={downloadShot} aria-label="Download screen as PNG">
-            <Download size={17} sw={1.6} />
+          <button
+            className="shot-btn"
+            data-on={view === 'studio'}
+            onClick={() => setView((v) => (v === 'studio' ? 'app' : 'studio'))}
+            aria-label="Design studio"
+          >
+            <Grid size={17} sw={1.6} />
           </button>
+          {view === 'app' && (
+            <button className="shot-btn" onClick={downloadShot} aria-label="Download screen as PNG">
+              <Download size={17} sw={1.6} />
+            </button>
+          )}
           <div className="toggle" role="group" aria-label="Theme">
             <button data-on={theme === 'light'} onClick={() => setTheme('light')} aria-label="Light">
               <Sun size={17} />
@@ -212,6 +216,29 @@ export default function App() {
       </motion.header>
 
       <main className="stage-main">
+        {view === 'studio' ? (
+          <div className="studio">
+            <div className="studio-tabs">
+              <button
+                className="studio-tab"
+                data-on={studioTab === 'components'}
+                onClick={() => setStudioTab('components')}
+              >
+                Components
+              </button>
+              <button
+                className="studio-tab"
+                data-on={studioTab === 'brand'}
+                onClick={() => setStudioTab('brand')}
+              >
+                Brand
+              </button>
+            </div>
+            <div className="studio-body">
+              {studioTab === 'components' ? <ComponentLibrary /> : <BrandGuide />}
+            </div>
+          </div>
+        ) : (
         <motion.div
           className="stage-device"
           style={{ '--scale': scale }}
@@ -240,6 +267,7 @@ export default function App() {
             <ScreenView tab={tab} messages={messages} typing={typing} handlers={handlers} />
           </PhoneFrame>
         </motion.div>
+        )}
       </main>
     </div>
   )

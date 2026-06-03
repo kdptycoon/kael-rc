@@ -60,6 +60,7 @@ import {
   Scales,
   Sun as PhSun,
   Moon as PhMoon,
+  Microphone as PhMic,
 } from '@phosphor-icons/react'
 
 /* Wrap a Phosphor icon to honour our { size, sw, weight } API.
@@ -84,6 +85,7 @@ export const Back = make(ArrowLeft)
 export const ArrowUpRight = make(PhArrowUpRight)
 export const Plus = make(PhPlus)
 export const Send = make(PaperPlaneTilt)
+export const Mic = make(PhMic)
 export const Sliders = make(SlidersHorizontal)
 export const Close = make(PhX)
 export const Clock = make(PhClock)

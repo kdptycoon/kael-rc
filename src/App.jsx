@@ -54,8 +54,8 @@ function ScreenView({ tab, messages, typing, handlers }) {
       return (
         <HomeScreen
           onPrompt={handlers.startFromPrompt}
-          onStart={handlers.goChat}
           onMood={handlers.bringMood}
+          messages={messages}
         />
       )
   }

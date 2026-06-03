@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Sparkle, Sliders, Plus, Send, Reply, Pattern, Back } from '../components/Icons.jsx'
+import { Sparkle, Sliders, Plus, Send, Mic, Reply, Pattern, Back } from '../components/Icons.jsx'
 
 const CHIPS = [
   { type: 'decode', label: 'Decode this', Icon: Sparkle },
@@ -126,9 +126,22 @@ export default function ChatScreen({ messages = [], typing = false, onSend, onCh
             placeholder="Message Kael…"
             aria-label="Message Kael"
           />
-          <button type="submit" className="send" aria-label="Send" disabled={!draft.trim()}>
-            <Send size={18} sw={1.8} />
-          </button>
+          {draft.trim() ? (
+            <motion.button
+              type="submit"
+              className="send"
+              aria-label="Send"
+              initial={{ scale: 0.6, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 24 }}
+            >
+              <Send size={18} sw={1.8} />
+            </motion.button>
+          ) : (
+            <button type="button" className="mic" aria-label="Voice message">
+              <Mic size={20} sw={1.6} />
+            </button>
+          )}
         </div>
       </form>
     </div>

@@ -622,8 +622,7 @@ svg {
   box-shadow: var(--shadow-card);
   transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
 }
-.pickup:hover {
-  transform: translateY(-2px);
+.pickup:focus-within {
   border-color: var(--line-strong);
   box-shadow: var(--shadow-float);
 }
@@ -646,15 +645,21 @@ svg {
   background: var(--field);
   border: 1px solid var(--line);
 }
-.pickup-ph {
+.pickup-input {
   flex: 1;
   min-width: 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--sans);
   font-size: 14px;
-  color: var(--ink-3);
+  color: var(--ink);
   letter-spacing: -0.003em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+}
+.pickup-input::placeholder {
+  color: var(--ink-3);
+}
+.pickup-input:focus {
+  outline: none;
 }
 .pickup-send {
   flex: none;
@@ -666,6 +671,42 @@ svg {
   display: grid;
   place-items: center;
   box-shadow: var(--shadow-btn);
+  border: 0;
+  cursor: pointer;
+  transition: opacity 0.18s ease;
+}
+.pickup-send:disabled {
+  opacity: 0.4;
+  box-shadow: none;
+  cursor: default;
+}
+.thread-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.thread-pill {
+  padding: 10px 15px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--ink-2);
+  letter-spacing: -0.003em;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.16s ease, color 0.16s ease, background 0.16s ease;
+}
+.thread-pill:hover {
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+[data-theme='dark'] .thread-pill {
+  background: #2c2820;
+  border-color: var(--line-strong);
 }
 
 .block {
@@ -1277,6 +1318,22 @@ svg {
   place-items: center;
   color: var(--ink-2);
   flex: none;
+}
+.composer .mic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--ink-2);
+  background: transparent;
+  border: 0;
+  flex: none;
+  cursor: pointer;
+  transition: transform 0.18s ease, color 0.16s ease;
+}
+.composer .mic:active {
+  transform: scale(0.92);
 }
 .composer .field-text {
   flex: 1;

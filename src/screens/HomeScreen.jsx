@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   Send,
@@ -59,6 +60,14 @@ const FROM_KAEL = [
   },
 ]
 
+// Keeps the live row at 2–4 pills when the conversation is still short.
+const FALLBACK_PROMPTS = [
+  'I keep overthinking their last text',
+  'I don’t know where this is going',
+  'I keep saying yes then feel resentful',
+  'I feel like I’m too much',
+]
+
 function greeting() {
   const h = new Date().getHours()
   if (h < 5) return 'Late night'
@@ -72,7 +81,39 @@ function today() {
   return new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
 }
 
-export default function HomeScreen({ onPrompt, onMood, onStart }) {
+export default function HomeScreen({ onPrompt, onMood, messages = [] }) {
+  const [draft, setDraft] = useState('')
+
+  // Live threads pulled from the actual conversation — most recent first.
+  const livePrompts = (() => {
+    const seen = new Set()
+    const out = []
+    for (let i = messages.length - 1; i >= 0 && out.length < 4; i--) {
+      const m = messages[i]
+      if (m.who !== 'user') continue
+      const full = m.text.trim()
+      const key = full.toLowerCase()
+      if (seen.has(key)) continue
+      seen.add(key)
+      out.push(full)
+    }
+    for (let i = 0; out.length < 2 && i < FALLBACK_PROMPTS.length; i++) {
+      const f = FALLBACK_PROMPTS[i]
+      if (seen.has(f.toLowerCase())) continue
+      seen.add(f.toLowerCase())
+      out.push(f)
+    }
+    return out
+  })()
+
+  function submitDraft(e) {
+    e.preventDefault()
+    const t = draft.trim()
+    if (!t) return
+    onPrompt?.(t)
+    setDraft('')
+  }
+
   return (
     <div className="screen-scroll home-scroll">
       <header className="home-top">
@@ -91,21 +132,28 @@ export default function HomeScreen({ onPrompt, onMood, onStart }) {
       </header>
 
       <section className="block pad">
-        <motion.button
-          className="pickup"
-          onClick={() => onStart?.()}
-          whileTap={{ scale: 0.99 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-          aria-label="Talk to Kael"
-        >
+        <div className="pickup">
           <span className="pickup-q">What’s alive right now?</span>
-          <span className="pickup-field">
-            <span className="pickup-ph">Say it out loud, or just start typing…</span>
-            <span className="pickup-send">
+          <form className="pickup-field" onSubmit={submitDraft}>
+            <input
+              className="pickup-input"
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              placeholder="Say it out loud, or just start typing…"
+              aria-label="What’s alive right now"
+            />
+            <motion.button
+              type="submit"
+              className="pickup-send"
+              disabled={!draft.trim()}
+              whileTap={{ scale: 0.9 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 26 }}
+              aria-label="Send to Kael"
+            >
               <Send size={18} sw={1.7} />
-            </span>
-          </span>
-        </motion.button>
+            </motion.button>
+          </form>
+        </div>
       </section>
 
       <section className="block pad">
@@ -143,6 +191,23 @@ export default function HomeScreen({ onPrompt, onMood, onStart }) {
                 <Icon size={16} sw={1.6} />
               </span>
               {label}
+            </motion.button>
+          ))}
+        </div>
+      </section>
+
+      <section className="block pad">
+        <span className="eyebrow">Continue a thread</span>
+        <div className="thread-pills block-gap">
+          {livePrompts.map((text) => (
+            <motion.button
+              key={text}
+              className="thread-pill"
+              onClick={() => onPrompt?.(text)}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 26 }}
+            >
+              {text}
             </motion.button>
           ))}
         </div>

@@ -147,12 +147,15 @@ const SHOTS = [
   { id: 'secure', theme: 'light', initialTab: 'you', title: 'Build healthy, secure relationships', devScale: 2.55, devTop: 700 },
 ]
 
-function StoreFrame({ shot, theme, outline, top, scale, titleTop, titleScale, frameRef }) {
+const FG_SWATCHES = ['#1b1a17', '#6e5638', '#7c7568', '#f7f5f0']
+const BG_SWATCHES = ['#f0ebe1', '#f6f2ea', '#ffffff', '#e7e1d5', '#1b1a17']
+
+function StoreFrame({ shot, theme, outline, top, scale, titleTop, titleScale, bg, fg, frameRef }) {
   return (
-    <div className="store-frame" data-theme="light" ref={frameRef}>
+    <div className="store-frame" data-theme="light" ref={frameRef} style={{ background: bg }}>
       <div
         className="store-titleblock"
-        style={{ '--title-top': `${titleTop}px`, '--title-scale': titleScale }}
+        style={{ '--title-top': `${titleTop}px`, '--title-scale': titleScale, '--title-color': fg }}
       >
         {shot.hero && (
           <>
@@ -179,7 +182,10 @@ export default function StoreScreens() {
   const [targets, setTargets] = useState(() => Object.fromEntries(SHOTS.map((s) => [s.id, 'phone'])))
   const [cfg, setCfg] = useState(() =>
     Object.fromEntries(
-      SHOTS.map((s) => [s.id, { top: s.devTop, scale: s.devScale, titleTop: 140, titleScale: 1 }]),
+      SHOTS.map((s) => [
+        s.id,
+        { top: s.devTop, scale: s.devScale, titleTop: 140, titleScale: 1, bg: '#f0ebe1', fg: '#1b1a17' },
+      ]),
     ),
   )
   const refs = useRef({})
@@ -207,24 +213,53 @@ export default function StoreScreens() {
     if (targets[id] === 'title') resizeTitle(id, dir * 0.06)
     else resize(id, dir * 0.1)
   }
+  function setColor(id, key, val) {
+    setCfg((c) => ({ ...c, [id]: { ...c[id], [key]: val } }))
+  }
 
   async function download(id) {
     const node = refs.current[id]
     if (!node) return
-    const { toPng } = await import('html-to-image')
-    const dataUrl = await toPng(node, {
-      cacheBust: true,
-      pixelRatio: 1,
-      width: 1290,
-      height: 2796,
-      canvasWidth: 1290,
-      canvasHeight: 2796,
-      style: { transform: 'none', transformOrigin: 'top left', margin: '0' },
+    // html-to-image resets scrollTop on its clone, so bake the current inner
+    // scroll offset into a transform (then restore) to capture the scrolled view.
+    const restore = []
+    node.querySelectorAll('.screen-scroll, .chat-scroll').forEach((sc) => {
+      const s = sc.scrollTop
+      if (!s) return
+      const kids = Array.from(sc.children)
+      const prevTransforms = kids.map((k) => k.style.transform)
+      const prevOverflow = sc.style.overflow
+      sc.style.overflow = 'hidden'
+      sc.scrollTop = 0
+      kids.forEach((k) => {
+        k.style.transform = `translateY(${-s}px)`
+      })
+      restore.push(() => {
+        sc.style.overflow = prevOverflow
+        kids.forEach((k, i) => {
+          k.style.transform = prevTransforms[i]
+        })
+        sc.scrollTop = s
+      })
     })
-    const a = document.createElement('a')
-    a.href = dataUrl
-    a.download = `appstore-${id}.png`
-    a.click()
+    try {
+      const { toPng } = await import('html-to-image')
+      const dataUrl = await toPng(node, {
+        cacheBust: true,
+        pixelRatio: 1,
+        width: 1290,
+        height: 2796,
+        canvasWidth: 1290,
+        canvasHeight: 2796,
+        style: { transform: 'none', transformOrigin: 'top left', margin: '0' },
+      })
+      const a = document.createElement('a')
+      a.href = dataUrl
+      a.download = `appstore-${id}.png`
+      a.click()
+    } finally {
+      restore.forEach((r) => r())
+    }
   }
 
   function toggleTheme(id) {
@@ -246,22 +281,68 @@ export default function StoreScreens() {
           <div className="store-cell" key={shot.id}>
             <div className="store-cell-bar">
               <span className="scb-name">{shot.id}</span>
-              <span className="scb-actions">
-                <button className="scb-btn scb-target" onClick={() => toggleTarget(shot.id)} title="Toggle Title / Phone">
-                  {targets[shot.id] === 'title' ? 'Title' : 'Phone'}
-                </button>
-                <button className="scb-btn" onClick={() => move(shot.id, -1)} title="Up">↑</button>
-                <button className="scb-btn" onClick={() => move(shot.id, 1)} title="Down">↓</button>
-                <button className="scb-btn" onClick={() => size(shot.id, -1)} title="Smaller">−</button>
-                <button className="scb-btn" onClick={() => size(shot.id, 1)} title="Bigger">+</button>
-                <button className="scb-btn" onClick={() => toggleTheme(shot.id)}>
-                  {themes[shot.id] === 'dark' ? 'Dark' : 'Light'}
-                </button>
-                <button className="scb-btn" onClick={() => toggleOutline(shot.id)}>
-                  {outlines[shot.id] === 'white' ? 'White' : 'Black'}
-                </button>
-                <button className="scb-btn scb-png" onClick={() => download(shot.id)}>PNG</button>
-              </span>
+              <div className="scb-tools">
+                  <span className="scb-group">
+                    <button className="scb-seg scb-target" onClick={() => toggleTarget(shot.id)} title="Toggle Title / Phone">
+                      {targets[shot.id] === 'title' ? 'Title' : 'Phone'}
+                    </button>
+                    <button className="scb-seg" onClick={() => move(shot.id, -1)} title="Up">↑</button>
+                    <button className="scb-seg" onClick={() => move(shot.id, 1)} title="Down">↓</button>
+                    <button className="scb-seg" onClick={() => size(shot.id, -1)} title="Smaller">−</button>
+                    <button className="scb-seg" onClick={() => size(shot.id, 1)} title="Bigger">+</button>
+                  </span>
+                  <span className="scb-group">
+                    <button className="scb-seg" onClick={() => toggleTheme(shot.id)}>
+                      {themes[shot.id] === 'dark' ? 'Dark' : 'Light'}
+                    </button>
+                    <button className="scb-seg" onClick={() => toggleOutline(shot.id)}>
+                      {outlines[shot.id] === 'white' ? 'White' : 'Black'}
+                    </button>
+                  </span>
+                  <button className="scb-btn scb-png" onClick={() => download(shot.id)}>PNG</button>
+                </div>
+              <div className="scb-tools scb-colorrow">
+                <span className="scb-group scb-colorgroup">
+                  <span className="scb-lbl">Font</span>
+                  {FG_SWATCHES.map((c) => (
+                    <button
+                      key={c}
+                      className="scb-sw"
+                      data-on={cfg[shot.id].fg === c}
+                      style={{ background: c }}
+                      onClick={() => setColor(shot.id, 'fg', c)}
+                      title={c}
+                    />
+                  ))}
+                  <input
+                    type="color"
+                    className="scb-pick"
+                    value={cfg[shot.id].fg}
+                    onChange={(e) => setColor(shot.id, 'fg', e.target.value)}
+                    title="Custom font color"
+                  />
+                </span>
+                <span className="scb-group scb-colorgroup">
+                  <span className="scb-lbl">Bg</span>
+                  {BG_SWATCHES.map((c) => (
+                    <button
+                      key={c}
+                      className="scb-sw"
+                      data-on={cfg[shot.id].bg === c}
+                      style={{ background: c }}
+                      onClick={() => setColor(shot.id, 'bg', c)}
+                      title={c}
+                    />
+                  ))}
+                  <input
+                    type="color"
+                    className="scb-pick"
+                    value={cfg[shot.id].bg}
+                    onChange={(e) => setColor(shot.id, 'bg', e.target.value)}
+                    title="Custom background color"
+                  />
+                </span>
+              </div>
             </div>
             <div className="store-scaler">
               <StoreFrame
@@ -272,6 +353,8 @@ export default function StoreScreens() {
                 scale={cfg[shot.id].scale}
                 titleTop={cfg[shot.id].titleTop}
                 titleScale={cfg[shot.id].titleScale}
+                bg={cfg[shot.id].bg}
+                fg={cfg[shot.id].fg}
                 frameRef={(el) => (refs.current[shot.id] = el)}
               />
             </div>

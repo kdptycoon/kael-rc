@@ -510,13 +510,39 @@ svg {
 }
 .store-cell {
   width: calc(1290px * var(--ps));
+  display: flex;
+  flex-direction: column;
 }
 .store-cell-bar {
+  order: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 14px;
+}
+.scb-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  margin-bottom: 10px;
+}
+.scb-colors {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.scb-sw {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
+  cursor: pointer;
+  padding: 0;
+}
+.scb-sw[data-on='true'] {
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--ink);
 }
 .scb-name {
   font-size: 12px;
@@ -562,14 +588,61 @@ svg {
 .scb-png {
   color: var(--ink);
 }
-.scb-target {
-  min-width: 54px;
-  color: var(--invert-ink);
-  background: var(--invert-bg);
-  border-color: var(--invert-bg);
+.scb-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
 }
+.scb-group {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+  border: 1px solid var(--line);
+}
+.scb-colorgroup {
+  gap: 5px;
+  padding: 5px 9px;
+}
+.scb-seg {
+  min-width: 30px;
+  padding: 5px 10px;
+  border: 0;
+  background: transparent;
+  border-radius: 8px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background 0.14s ease, color 0.14s ease;
+}
+.scb-seg:hover {
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  color: var(--ink);
+}
+.scb-target,
 .scb-target:hover {
+  background: var(--invert-bg);
   color: var(--invert-ink);
+}
+.scb-pick {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.scb-pick::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+.scb-pick::-webkit-color-swatch {
+  border: 1px solid color-mix(in srgb, var(--ink) 25%, transparent);
+  border-radius: 50%;
 }
 .store-scaler {
   position: relative;
@@ -605,7 +678,7 @@ svg {
   font-size: calc(90px * var(--title-scale, 1));
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: var(--ink);
+  color: var(--title-color, var(--ink));
   margin-bottom: 30px;
 }
 .st-rule {
@@ -613,7 +686,7 @@ svg {
   width: 76px;
   height: 4px;
   border-radius: 2px;
-  background: var(--ink);
+  background: var(--title-color, var(--ink));
   opacity: 0.2;
   margin: 0 auto 36px;
 }
@@ -624,7 +697,7 @@ svg {
   font-size: calc(112px * var(--title-scale, 1));
   line-height: 1.02;
   letter-spacing: -0.035em;
-  color: var(--ink);
+  color: var(--title-color, var(--ink));
   text-wrap: balance;
 }
 .st-title.hero {
@@ -1038,7 +1111,7 @@ svg {
 }
 .home-greeting h1 {
   font-family: var(--serif);
-  font-weight: 300;
+  font-weight: 400;
   font-size: 38px;
   line-height: 1.05;
   letter-spacing: -0.022em;
@@ -1048,6 +1121,7 @@ svg {
   display: block;
   margin-top: 13px;
   font-size: 13.5px;
+  font-weight: 500;
   color: var(--ink-2);
   letter-spacing: 0.005em;
 }
@@ -1088,7 +1162,7 @@ svg {
   display: block;
   font-family: var(--serif);
   font-size: 23px;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.22;
   letter-spacing: -0.014em;
   color: var(--ink);
@@ -1110,6 +1184,7 @@ svg {
   background: transparent;
   font-family: var(--sans);
   font-size: 14px;
+  font-weight: 500;
   color: var(--ink);
   letter-spacing: -0.003em;
 }
@@ -1180,7 +1255,7 @@ svg {
 }
 .mt-name {
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--ink);
   letter-spacing: -0.003em;
 }
@@ -1203,7 +1278,7 @@ svg {
   background: var(--surface);
   color: var(--ink);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.004em;
   box-shadow: var(--shadow-card);
   text-align: left;

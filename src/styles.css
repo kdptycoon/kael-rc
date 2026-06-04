@@ -527,6 +527,31 @@ svg {
   align-items: flex-start;
   gap: 6px;
 }
+.store-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+.store-undo {
+  flex: 0 0 auto;
+  margin-top: 4px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font: 600 12px var(--sans);
+  color: var(--ink);
+  background: var(--field);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  transition: border-color 0.16s ease, opacity 0.16s ease;
+}
+.store-undo:hover:not(:disabled) {
+  border-color: var(--line-strong);
+}
+.store-undo:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
 .scb-row {
   display: flex;
   align-items: center;

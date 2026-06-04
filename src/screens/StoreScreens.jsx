@@ -299,8 +299,27 @@ export default function StoreScreens() {
   const [active, setActive] = useState({}) // frameId -> active pop pid
   const [editing, setEditing] = useState({}) // frameId -> pid being text-edited
   const [guide, setGuide] = useState({}) // frameId -> checkpoint Y while dragging
+  const [history, setHistory] = useState([]) // snapshots for undo
   const pidRef = useRef(1)
   const refs = useRef({})
+
+  // Snapshot current structural state (immutable updates make refs safe to keep).
+  function pushHistory() {
+    setHistory((h) => [...h.slice(-49), { cfg, themes, outlines, targets }])
+  }
+  function undo() {
+    if (!history.length) return
+    const prev = history[history.length - 1]
+    setCfg(prev.cfg)
+    setThemes(prev.themes)
+    setOutlines(prev.outlines)
+    setTargets(prev.targets)
+    setHistory((h) => h.slice(0, -1))
+    setActive({})
+    setEditing({})
+    setPicking(null)
+    setGuide({})
+  }
 
   function resize(id, d) {
     setCfg((c) => ({ ...c, [id]: { ...c[id], scale: Math.round((c[id].scale + d) * 100) / 100 } }))
@@ -312,6 +331,7 @@ export default function StoreScreens() {
     setTargets((t) => ({ ...t, [id]: t[id] === 'title' ? 'phone' : 'title' }))
   }
   function size(id, dir) {
+    pushHistory()
     if (targets[id] === 'title') resizeTitle(id, dir * 0.06)
     else resize(id, dir * 0.1)
   }
@@ -330,6 +350,7 @@ export default function StoreScreens() {
       if (!dragging) {
         if (Math.abs(ev.clientY - sy) + Math.abs(ev.clientX - sx) <= 6) return
         dragging = true
+        pushHistory()
         const sel = window.getSelection && window.getSelection()
         if (sel) sel.removeAllRanges()
         if (document.activeElement && document.activeElement.blur) document.activeElement.blur()
@@ -365,13 +386,19 @@ export default function StoreScreens() {
     window.addEventListener('pointerup', onUp, true)
   }
   function setColor(id, key, val) {
+    pushHistory()
     setCfg((c) => ({ ...c, [id]: { ...c[id], [key]: val } }))
+  }
+  function colorPop(id, pid, patch) {
+    pushHistory()
+    patchPop(id, pid, patch)
   }
 
   function startPick(id) {
     setPicking((p) => (p === id ? null : id))
   }
   function addPop(id, html, w) {
+    pushHistory()
     const pid = pidRef.current++
     setCfg((c) => {
       const n = c[id].pops.length
@@ -387,11 +414,13 @@ export default function StoreScreens() {
     }))
   }
   function removePop(id, pid) {
+    pushHistory()
     setCfg((c) => ({ ...c, [id]: { ...c[id], pops: c[id].pops.filter((p) => p.pid !== pid) } }))
     setActive((a) => ({ ...a, [id]: null }))
     setEditing((e) => ({ ...e, [id]: null }))
   }
   function resizePop(id, pid, d) {
+    pushHistory()
     setCfg((c) => ({
       ...c,
       [id]: {
@@ -403,6 +432,7 @@ export default function StoreScreens() {
     }))
   }
   function togglePopTheme(id, pid) {
+    pushHistory()
     setCfg((c) => ({
       ...c,
       [id]: {
@@ -421,6 +451,7 @@ export default function StoreScreens() {
     setEditing((e) => ({ ...e, [id]: null }))
   }
   function setBlurAmt(id, d) {
+    pushHistory()
     setCfg((c) => ({ ...c, [id]: { ...c[id], blur: Math.max(0, c[id].blur + d) } }))
   }
   function startDragPop(id, pid, e) {
@@ -437,7 +468,12 @@ export default function StoreScreens() {
     if (!pop) return
     const ox = pop.x
     const oy = pop.y
+    let pushed = false
     function onMove(ev) {
+      if (!pushed) {
+        pushHistory()
+        pushed = true
+      }
       patchPop(id, pid, {
         x: Math.round(ox + (ev.clientX - sx) / ratio),
         y: Math.round(oy + (ev.clientY - sy) / ratio),
@@ -503,18 +539,27 @@ export default function StoreScreens() {
   }
 
   function toggleTheme(id) {
+    pushHistory()
     setThemes((t) => ({ ...t, [id]: t[id] === 'dark' ? 'light' : 'dark' }))
   }
   function toggleOutline(id) {
+    pushHistory()
     setOutlines((o) => ({ ...o, [id]: o[id] === 'white' ? 'black' : 'white' }))
   }
 
   return (
     <div className="lib-page store-page">
-      <h1 className="lib-title">App Store</h1>
-      <p className="lib-sub">
-        1290 × 2796. Click through the live app to set up each shot, edit the title, then export the PNG.
-      </p>
+      <div className="store-head">
+        <div>
+          <h1 className="lib-title">App Store</h1>
+          <p className="lib-sub">
+            1290 × 2796. Click through the live app to set up each shot, edit the title, then export the PNG.
+          </p>
+        </div>
+        <button className="store-undo" onClick={undo} disabled={!history.length} title="Undo last change">
+          ↩ Undo
+        </button>
+      </div>
 
       <div className="store-grid">
         {SHOTS.map((shot) => {
@@ -619,8 +664,8 @@ export default function StoreScreens() {
                 )}
                 <span className="scb-group">
                   <span className="scb-lbl">Blur</span>
-                  <button className="scb-seg" onClick={() => setBlurAmt(shot.id, -3)} title="Less blur">−</button>
-                  <button className="scb-seg" onClick={() => setBlurAmt(shot.id, 3)} title="More blur">+</button>
+                  <button className="scb-seg" onClick={() => setBlurAmt(shot.id, -1)} title="Less blur">−</button>
+                  <button className="scb-seg" onClick={() => setBlurAmt(shot.id, 1)} title="More blur">+</button>
                 </span>
               </div>
               {ap && (
@@ -633,7 +678,7 @@ export default function StoreScreens() {
                         className="scb-sw"
                         data-on={ap.fg === c}
                         style={{ background: c }}
-                        onClick={() => patchPop(shot.id, ap.pid, { fg: c })}
+                        onClick={() => colorPop(shot.id, ap.pid, { fg: c })}
                         title={c}
                       />
                     ))}
@@ -641,7 +686,7 @@ export default function StoreScreens() {
                       type="color"
                       className="scb-pick"
                       value={ap.fg || '#1b1a17'}
-                      onChange={(e) => patchPop(shot.id, ap.pid, { fg: e.target.value })}
+                      onChange={(e) => colorPop(shot.id, ap.pid, { fg: e.target.value })}
                       title="Custom card text color"
                     />
                   </span>
@@ -653,7 +698,7 @@ export default function StoreScreens() {
                         className="scb-sw"
                         data-on={ap.bg === c}
                         style={{ background: c }}
-                        onClick={() => patchPop(shot.id, ap.pid, { bg: c })}
+                        onClick={() => colorPop(shot.id, ap.pid, { bg: c })}
                         title={c}
                       />
                     ))}
@@ -661,7 +706,7 @@ export default function StoreScreens() {
                       type="color"
                       className="scb-pick"
                       value={ap.bg || '#f0ebe1'}
-                      onChange={(e) => patchPop(shot.id, ap.pid, { bg: e.target.value })}
+                      onChange={(e) => colorPop(shot.id, ap.pid, { bg: e.target.value })}
                       title="Custom card bg color"
                     />
                   </span>

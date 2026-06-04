@@ -588,6 +588,10 @@ svg {
 .scb-png {
   color: var(--ink);
 }
+.scb-pickbtn[data-on='true'] {
+  background: var(--invert-bg);
+  color: var(--invert-ink);
+}
 .scb-tools {
   display: flex;
   flex-wrap: wrap;
@@ -709,6 +713,35 @@ svg {
   width: 442px;
   transform-origin: top center;
   transform: scale(var(--dev-scale, 2.4));
+  transition: filter 0.2s ease;
+}
+.store-device[data-pick] {
+  cursor: crosshair;
+}
+.store-device[data-pick]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 52px;
+  box-shadow: 0 0 0 4px rgba(110, 86, 56, 0.55);
+  pointer-events: none;
+}
+.store-pop {
+  position: absolute;
+  transform-origin: top left;
+  transform: scale(var(--pop-scale, 1.6));
+  filter: drop-shadow(0 24px 60px rgba(15, 14, 11, 0.42));
+  cursor: grab;
+  touch-action: none;
+  z-index: 6;
+}
+.store-pop:active {
+  cursor: grabbing;
+}
+.store-pop > * {
+  width: 100% !important;
+  margin: 0 !important;
+  box-sizing: border-box;
 }
 .store-phone {
   width: 442px;

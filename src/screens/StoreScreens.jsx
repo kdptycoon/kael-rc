@@ -150,7 +150,12 @@ const SHOTS = [
 const FG_SWATCHES = ['#1b1a17', '#6e5638', '#7c7568', '#f7f5f0']
 const BG_SWATCHES = ['#f0ebe1', '#f6f2ea', '#ffffff', '#e7e1d5', '#1b1a17']
 
-function StoreFrame({ shot, theme, outline, top, scale, titleTop, titleScale, bg, fg, frameRef }) {
+// Elements that can be lifted out into a "pop" — the nearest one to a click wins.
+const POP_SELECTOR =
+  '.mcard, .value-tile, .mhero, .growth-edge, .belief-quote, .belief-truth, .j-card, .j-node, .journey-intro, .litem, .mood-tile, .way-pill, .fk-card, .pickup, .bubble-kael, .bubble-user, .chip, .snap-values'
+
+function StoreFrame({ shot, theme, outline, top, scale, titleTop, titleScale, bg, fg, picking, onPick, pop, onPopDown, frameRef }) {
+  const blurred = pop.html && pop.blur > 0
   return (
     <div className="store-frame" data-theme="light" ref={frameRef} style={{ background: bg }}>
       <div
@@ -167,11 +172,31 @@ function StoreFrame({ shot, theme, outline, top, scale, titleTop, titleScale, bg
       </div>
       <div
         className="store-device"
-        style={{ top: `${top}px`, '--dev-scale': scale }}
+        data-pick={picking ? 'true' : undefined}
+        style={{ top: `${top}px`, '--dev-scale': scale, filter: blurred ? `blur(${pop.blur}px)` : undefined }}
         onMouseDown={(e) => e.preventDefault()}
+        onClickCapture={
+          picking
+            ? (e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                const el = e.target.closest(POP_SELECTOR)
+                if (el) onPick(el.outerHTML, el.offsetWidth)
+              }
+            : undefined
+        }
       >
         <MiniApp theme={theme} initialTab={shot.initialTab} outline={outline} />
       </div>
+      {pop.html && (
+        <div
+          className="store-pop"
+          data-theme={theme}
+          style={{ left: `${pop.x}px`, top: `${pop.y}px`, width: `${pop.w}px`, '--pop-scale': pop.scale }}
+          onPointerDown={onPopDown}
+          dangerouslySetInnerHTML={{ __html: pop.html }}
+        />
+      )}
     </div>
   )
 }
@@ -184,10 +209,24 @@ export default function StoreScreens() {
     Object.fromEntries(
       SHOTS.map((s) => [
         s.id,
-        { top: s.devTop, scale: s.devScale, titleTop: 140, titleScale: 1, bg: '#f0ebe1', fg: '#1b1a17' },
+        {
+          top: s.devTop,
+          scale: s.devScale,
+          titleTop: 140,
+          titleScale: 1,
+          bg: '#f0ebe1',
+          fg: '#1b1a17',
+          popHtml: null,
+          popWidth: 360,
+          popX: 360,
+          popY: 1080,
+          popScale: 2,
+          blur: 0,
+        },
       ]),
     ),
   )
+  const [picking, setPicking] = useState(null)
   const refs = useRef({})
 
   function nudge(id, d) {
@@ -215,6 +254,52 @@ export default function StoreScreens() {
   }
   function setColor(id, key, val) {
     setCfg((c) => ({ ...c, [id]: { ...c[id], [key]: val } }))
+  }
+
+  function startPick(id) {
+    setPicking((p) => (p === id ? null : id))
+  }
+  function pickComponent(id, html, w) {
+    setCfg((c) => ({ ...c, [id]: { ...c[id], popHtml: html, popWidth: w } }))
+    setPicking(null)
+  }
+  function clearPop(id) {
+    setCfg((c) => ({ ...c, [id]: { ...c[id], popHtml: null } }))
+    setPicking(null)
+  }
+  function resizePop(id, d) {
+    setCfg((c) => ({
+      ...c,
+      [id]: { ...c[id], popScale: Math.max(0.3, Math.round((c[id].popScale + d) * 100) / 100) },
+    }))
+  }
+  function setBlurAmt(id, d) {
+    setCfg((c) => ({ ...c, [id]: { ...c[id], blur: Math.max(0, c[id].blur + d) } }))
+  }
+  function startDragPop(id, e) {
+    e.preventDefault()
+    const frame = refs.current[id]
+    if (!frame) return
+    const ratio = frame.getBoundingClientRect().width / 1290 // preview scale
+    const sx = e.clientX
+    const sy = e.clientY
+    const { popX: ox, popY: oy } = cfg[id]
+    function onMove(ev) {
+      setCfg((c) => ({
+        ...c,
+        [id]: {
+          ...c[id],
+          popX: Math.round(ox + (ev.clientX - sx) / ratio),
+          popY: Math.round(oy + (ev.clientY - sy) / ratio),
+        },
+      }))
+    }
+    function onUp() {
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp)
+    }
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUp)
   }
 
   async function download(id) {
@@ -343,6 +428,30 @@ export default function StoreScreens() {
                   />
                 </span>
               </div>
+              <div className="scb-tools scb-poprow">
+                <span className="scb-group">
+                  <span className="scb-lbl">Pop</span>
+                  <button
+                    className="scb-seg scb-pickbtn"
+                    data-on={picking === shot.id}
+                    onClick={() => startPick(shot.id)}
+                  >
+                    {picking === shot.id ? 'Tap a card…' : 'Pick'}
+                  </button>
+                  {cfg[shot.id].popHtml && (
+                    <>
+                      <button className="scb-seg" onClick={() => resizePop(shot.id, -0.15)} title="Smaller">−</button>
+                      <button className="scb-seg" onClick={() => resizePop(shot.id, 0.15)} title="Bigger">+</button>
+                      <button className="scb-seg" onClick={() => clearPop(shot.id)} title="Remove">Clear</button>
+                    </>
+                  )}
+                </span>
+                <span className="scb-group">
+                  <span className="scb-lbl">Blur</span>
+                  <button className="scb-seg" onClick={() => setBlurAmt(shot.id, -3)} title="Less blur">−</button>
+                  <button className="scb-seg" onClick={() => setBlurAmt(shot.id, 3)} title="More blur">+</button>
+                </span>
+              </div>
             </div>
             <div className="store-scaler">
               <StoreFrame
@@ -355,6 +464,17 @@ export default function StoreScreens() {
                 titleScale={cfg[shot.id].titleScale}
                 bg={cfg[shot.id].bg}
                 fg={cfg[shot.id].fg}
+                picking={picking === shot.id}
+                onPick={(html, w) => pickComponent(shot.id, html, w)}
+                pop={{
+                  html: cfg[shot.id].popHtml,
+                  x: cfg[shot.id].popX,
+                  y: cfg[shot.id].popY,
+                  w: cfg[shot.id].popWidth,
+                  scale: cfg[shot.id].popScale,
+                  blur: cfg[shot.id].blur,
+                }}
+                onPopDown={(e) => startDragPop(shot.id, e)}
                 frameRef={(el) => (refs.current[shot.id] = el)}
               />
             </div>

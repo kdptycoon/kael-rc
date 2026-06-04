@@ -729,8 +729,8 @@ svg {
 .store-pop {
   position: absolute;
   transform-origin: top left;
-  transform: scale(var(--pop-scale, 1.6));
-  filter: drop-shadow(0 24px 60px rgba(15, 14, 11, 0.42));
+  transform: scale(var(--pop-scale, 2));
+  filter: drop-shadow(0 22px 55px rgba(15, 14, 11, 0.4));
   cursor: grab;
   touch-action: none;
   z-index: 6;
@@ -738,7 +738,17 @@ svg {
 .store-pop:active {
   cursor: grabbing;
 }
-.store-pop > * {
+.store-pop[data-sel='true'] {
+  outline: 1.5px solid rgba(110, 86, 56, 0.95);
+  outline-offset: 5px;
+}
+.store-pop[data-edit='true'] {
+  cursor: text;
+}
+.pop-body {
+  outline: none;
+}
+.pop-body > * {
   width: 100% !important;
   margin: 0 !important;
   box-sizing: border-box;

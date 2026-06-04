@@ -509,7 +509,7 @@ svg {
   justify-items: center;
 }
 .store-cell {
-  width: calc(1290px * var(--ps));
+  width: calc(1290px * var(--ps) + 46px);
   display: flex;
   flex-direction: column;
 }
@@ -520,6 +520,12 @@ svg {
   align-items: flex-start;
   gap: 8px;
   margin-top: 14px;
+  padding-left: 46px;
+}
+.store-stage {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
 }
 .scb-row {
   display: flex;
@@ -752,6 +758,52 @@ svg {
   width: 100% !important;
   margin: 0 !important;
   box-sizing: border-box;
+}
+.store-ruler {
+  position: relative;
+  flex: 0 0 40px;
+  width: 40px;
+  height: calc(2796px * var(--ps));
+  pointer-events: none;
+}
+.rl-tick {
+  position: absolute;
+  right: 0;
+  width: 7px;
+  height: 1px;
+  background: rgba(110, 86, 56, 0.4);
+}
+.rl-tick[data-major] {
+  width: 13px;
+  height: 2px;
+  background: rgba(110, 86, 56, 0.6);
+}
+.rl-label {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font: 600 10px var(--sans);
+  color: rgba(110, 86, 56, 0.7);
+  white-space: nowrap;
+}
+.store-guide {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #e5484d;
+  z-index: 9;
+  pointer-events: none;
+  box-shadow: 0 0 10px 1px rgba(229, 72, 77, 0.4);
+}
+.store-titleblock,
+.store-device {
+  cursor: grab;
+}
+.store-titleblock:active,
+.store-device:active {
+  cursor: grabbing;
 }
 .store-phone {
   width: 442px;

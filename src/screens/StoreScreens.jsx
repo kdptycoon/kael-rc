@@ -154,19 +154,54 @@ const BG_SWATCHES = ['#f0ebe1', '#f6f2ea', '#ffffff', '#e7e1d5', '#1b1a17']
 const POP_SELECTOR =
   '.mcard, .value-tile, .mhero, .growth-edge, .belief-quote, .belief-truth, .j-card, .j-node, .journey-intro, .litem, .mood-tile, .way-pill, .fk-card, .pickup, .bubble-kael, .bubble-user, .chip, .snap-values'
 
+// Studio-only position ruler down the frame (0..2796px), every 100px, labelled each 500.
+const RULER_MARKS = Array.from({ length: 28 }, (_, i) => i * 100)
+// Drag shows a red guide line at every ruler mark (each 100px).
+const CHECKPOINTS = RULER_MARKS
+const CHECKPOINT_SNAP = 22 // frame px within which the guide shows
+
+function StoreRuler() {
+  return (
+    <div className="store-ruler" aria-hidden="true">
+      {RULER_MARKS.map((y) => (
+        <div key={y} className="rl-tick" data-major={y % 500 === 0 || undefined} style={{ top: `calc(${y}px * var(--ps))` }}>
+          {y % 500 === 0 && <span className="rl-label">{y}</span>}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 // One lifted-out, draggable, editable card floating over the phone.
 function PopCard({ pop, active, editing, onDown }) {
   const ref = useRef(null)
   useEffect(() => {
     if (editing && ref.current) ref.current.focus()
   }, [editing])
+  // bg/fg drive the whole card by overriding theme tokens; secondary tones are mixed.
+  const colorVars = {}
+  if (pop.bg) {
+    colorVars['--surface'] = pop.bg
+    colorVars['--surface-2'] = pop.bg
+    colorVars['--paper'] = pop.bg
+    colorVars['--field'] = pop.bg
+  }
+  if (pop.fg) {
+    const into = pop.bg || 'transparent'
+    colorVars['--ink'] = pop.fg
+    colorVars['--ink-2'] = `color-mix(in srgb, ${pop.fg} 72%, ${into})`
+    colorVars['--ink-3'] = `color-mix(in srgb, ${pop.fg} 50%, ${into})`
+    colorVars['--line'] = `color-mix(in srgb, ${pop.fg} 18%, transparent)`
+    colorVars['--line-2'] = `color-mix(in srgb, ${pop.fg} 12%, transparent)`
+    colorVars['--line-strong'] = `color-mix(in srgb, ${pop.fg} 32%, transparent)`
+  }
   return (
     <div
       className="store-pop"
       data-theme={pop.theme}
       data-sel={active ? 'true' : undefined}
       data-edit={editing ? 'true' : undefined}
-      style={{ left: `${pop.x}px`, top: `${pop.y}px`, width: `${pop.w}px`, '--pop-scale': pop.scale }}
+      style={{ left: `${pop.x}px`, top: `${pop.y}px`, width: `${pop.w}px`, '--pop-scale': pop.scale, ...colorVars }}
       onPointerDown={onDown}
     >
       <div
@@ -181,7 +216,7 @@ function PopCard({ pop, active, editing, onDown }) {
   )
 }
 
-function StoreFrame({ shot, theme, outline, top, scale, titleTop, titleScale, bg, fg, picking, onPick, pops, blur, active, editing, onPopDown, onDeselect, frameRef }) {
+function StoreFrame({ shot, theme, outline, top, scale, titleTop, titleScale, bg, fg, picking, onPick, pops, blur, active, editing, onPopDown, onDeselect, onPhoneDown, onTitleDown, guide, frameRef }) {
   const blurred = pops.length > 0 && blur > 0
   return (
     <div
@@ -196,6 +231,7 @@ function StoreFrame({ shot, theme, outline, top, scale, titleTop, titleScale, bg
       <div
         className="store-titleblock"
         style={{ '--title-top': `${titleTop}px`, '--title-scale': titleScale, '--title-color': fg }}
+        onPointerDown={onTitleDown}
       >
         {shot.hero && (
           <>
@@ -210,6 +246,7 @@ function StoreFrame({ shot, theme, outline, top, scale, titleTop, titleScale, bg
         data-pick={picking ? 'true' : undefined}
         style={{ top: `${top}px`, '--dev-scale': scale, filter: blurred ? `blur(${blur}px)` : undefined }}
         onMouseDown={(e) => e.preventDefault()}
+        onPointerDown={onPhoneDown}
         onClickCapture={
           picking
             ? (e) => {
@@ -232,6 +269,7 @@ function StoreFrame({ shot, theme, outline, top, scale, titleTop, titleScale, bg
           onDown={(e) => onPopDown(p.pid, e)}
         />
       ))}
+      {guide != null && <div className="store-guide" style={{ top: `${guide}px` }} aria-hidden="true" />}
     </div>
   )
 }
@@ -260,17 +298,12 @@ export default function StoreScreens() {
   const [picking, setPicking] = useState(null)
   const [active, setActive] = useState({}) // frameId -> active pop pid
   const [editing, setEditing] = useState({}) // frameId -> pid being text-edited
+  const [guide, setGuide] = useState({}) // frameId -> checkpoint Y while dragging
   const pidRef = useRef(1)
   const refs = useRef({})
 
-  function nudge(id, d) {
-    setCfg((c) => ({ ...c, [id]: { ...c[id], top: c[id].top + d } }))
-  }
   function resize(id, d) {
     setCfg((c) => ({ ...c, [id]: { ...c[id], scale: Math.round((c[id].scale + d) * 100) / 100 } }))
-  }
-  function nudgeTitle(id, d) {
-    setCfg((c) => ({ ...c, [id]: { ...c[id], titleTop: c[id].titleTop + d } }))
   }
   function resizeTitle(id, d) {
     setCfg((c) => ({ ...c, [id]: { ...c[id], titleScale: Math.round((c[id].titleScale + d) * 100) / 100 } }))
@@ -278,13 +311,58 @@ export default function StoreScreens() {
   function toggleTarget(id) {
     setTargets((t) => ({ ...t, [id]: t[id] === 'title' ? 'phone' : 'title' }))
   }
-  function move(id, dir) {
-    if (targets[id] === 'title') nudgeTitle(id, dir * 30)
-    else nudge(id, dir * 40)
-  }
   function size(id, dir) {
     if (targets[id] === 'title') resizeTitle(id, dir * 0.06)
     else resize(id, dir * 0.1)
+  }
+  // Vertical drag for the phone / title. Tiny moves stay clicks (interact / edit).
+  function startVDrag(id, kind, e) {
+    if (kind === 'phone' && picking === id) return
+    const frame = refs.current[id]
+    if (!frame) return
+    const ratio = frame.getBoundingClientRect().width / 1290
+    const sy = e.clientY
+    const sx = e.clientX
+    const key = kind === 'title' ? 'titleTop' : 'top'
+    const start = cfg[id][key]
+    let dragging = false
+    function onMove(ev) {
+      if (!dragging) {
+        if (Math.abs(ev.clientY - sy) + Math.abs(ev.clientX - sx) <= 6) return
+        dragging = true
+        const sel = window.getSelection && window.getSelection()
+        if (sel) sel.removeAllRanges()
+        if (document.activeElement && document.activeElement.blur) document.activeElement.blur()
+      }
+      ev.preventDefault()
+      const ny = Math.round(start + (ev.clientY - sy) / ratio)
+      let cp = null
+      for (const m of CHECKPOINTS) {
+        if (Math.abs(ny - m) <= CHECKPOINT_SNAP) {
+          cp = m
+          break
+        }
+      }
+      setCfg((c) => ({ ...c, [id]: { ...c[id], [key]: ny } }))
+      setGuide((g) => (g[id] === cp ? g : { ...g, [id]: cp }))
+    }
+    function onUp() {
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp, true)
+      setGuide((g) => ({ ...g, [id]: null }))
+      if (dragging) {
+        // swallow the click that follows a drag so the app / title doesn't act
+        const sup = (ev) => {
+          ev.stopPropagation()
+          ev.preventDefault()
+          frame.removeEventListener('click', sup, true)
+        }
+        frame.addEventListener('click', sup, true)
+        setTimeout(() => frame.removeEventListener('click', sup, true), 150)
+      }
+    }
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUp, true)
   }
   function setColor(id, key, val) {
     setCfg((c) => ({ ...c, [id]: { ...c[id], [key]: val } }))
@@ -297,7 +375,7 @@ export default function StoreScreens() {
     const pid = pidRef.current++
     setCfg((c) => {
       const n = c[id].pops.length
-      const pop = { pid, html, w, x: 300 + (n % 3) * 70, y: 740 + (n % 4) * 90, scale: 2, theme: themes[id] }
+      const pop = { pid, html, w, x: 300 + (n % 3) * 70, y: 740 + (n % 4) * 90, scale: 2, theme: themes[id], bg: null, fg: null }
       return { ...c, [id]: { ...c[id], pops: [...c[id].pops, pop] } }
     })
     setActive((a) => ({ ...a, [id]: pid }))
@@ -330,7 +408,7 @@ export default function StoreScreens() {
       [id]: {
         ...c[id],
         pops: c[id].pops.map((p) =>
-          p.pid === pid ? { ...p, theme: p.theme === 'dark' ? 'light' : 'dark' } : p,
+          p.pid === pid ? { ...p, theme: p.theme === 'dark' ? 'light' : 'dark', bg: null, fg: null } : p,
         ),
       },
     }))
@@ -380,6 +458,7 @@ export default function StoreScreens() {
     setPicking(null)
     setActive((a) => ({ ...a, [id]: null }))
     setEditing((e) => ({ ...e, [id]: null }))
+    setGuide((g) => ({ ...g, [id]: null }))
     await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))
     // html-to-image resets scrollTop on its clone, so bake the current inner
     // scroll offset into a transform (then restore) to capture the scrolled view.
@@ -438,17 +517,17 @@ export default function StoreScreens() {
       </p>
 
       <div className="store-grid">
-        {SHOTS.map((shot) => (
+        {SHOTS.map((shot) => {
+          const ap = cfg[shot.id].pops.find((p) => p.pid === active[shot.id]) || null
+          return (
           <div className="store-cell" key={shot.id}>
             <div className="store-cell-bar">
               <span className="scb-name">{shot.id}</span>
               <div className="scb-tools">
                   <span className="scb-group">
-                    <button className="scb-seg scb-target" onClick={() => toggleTarget(shot.id)} title="Toggle Title / Phone">
+                    <button className="scb-seg scb-target" onClick={() => toggleTarget(shot.id)} title="Drag the phone or title to move; − + resizes this one">
                       {targets[shot.id] === 'title' ? 'Title' : 'Phone'}
                     </button>
-                    <button className="scb-seg" onClick={() => move(shot.id, -1)} title="Up">↑</button>
-                    <button className="scb-seg" onClick={() => move(shot.id, 1)} title="Down">↓</button>
                     <button className="scb-seg" onClick={() => size(shot.id, -1)} title="Smaller">−</button>
                     <button className="scb-seg" onClick={() => size(shot.id, 1)} title="Bigger">+</button>
                   </span>
@@ -515,27 +594,27 @@ export default function StoreScreens() {
                     {picking === shot.id ? 'Tap cards…' : 'Pick'}
                   </button>
                 </span>
-                {active[shot.id] != null && cfg[shot.id].pops.some((p) => p.pid === active[shot.id]) && (
+                {ap && (
                   <span className="scb-group">
                     <span className="scb-lbl">Card</span>
                     <button
                       className="scb-seg"
-                      onClick={() => togglePopTheme(shot.id, active[shot.id])}
+                      onClick={() => togglePopTheme(shot.id, ap.pid)}
                       title="Card light / dark"
                     >
-                      {cfg[shot.id].pops.find((p) => p.pid === active[shot.id])?.theme === 'dark' ? 'Dark' : 'Light'}
+                      {ap.theme === 'dark' ? 'Dark' : 'Light'}
                     </button>
-                    <button className="scb-seg" onClick={() => resizePop(shot.id, active[shot.id], -0.15)} title="Smaller">−</button>
-                    <button className="scb-seg" onClick={() => resizePop(shot.id, active[shot.id], 0.15)} title="Bigger">+</button>
+                    <button className="scb-seg" onClick={() => resizePop(shot.id, ap.pid, -0.15)} title="Smaller">−</button>
+                    <button className="scb-seg" onClick={() => resizePop(shot.id, ap.pid, 0.15)} title="Bigger">+</button>
                     <button
                       className="scb-seg"
-                      data-on={editing[shot.id] === active[shot.id]}
-                      onClick={() => toggleEdit(shot.id, active[shot.id])}
+                      data-on={editing[shot.id] === ap.pid}
+                      onClick={() => toggleEdit(shot.id, ap.pid)}
                       title="Edit text"
                     >
                       Edit
                     </button>
-                    <button className="scb-seg" onClick={() => removePop(shot.id, active[shot.id])} title="Delete card">Delete</button>
+                    <button className="scb-seg" onClick={() => removePop(shot.id, ap.pid)} title="Delete card">Delete</button>
                   </span>
                 )}
                 <span className="scb-group">
@@ -544,8 +623,54 @@ export default function StoreScreens() {
                   <button className="scb-seg" onClick={() => setBlurAmt(shot.id, 3)} title="More blur">+</button>
                 </span>
               </div>
+              {ap && (
+                <div className="scb-tools scb-colorrow">
+                  <span className="scb-group scb-colorgroup">
+                    <span className="scb-lbl">Card text</span>
+                    {FG_SWATCHES.map((c) => (
+                      <button
+                        key={c}
+                        className="scb-sw"
+                        data-on={ap.fg === c}
+                        style={{ background: c }}
+                        onClick={() => patchPop(shot.id, ap.pid, { fg: c })}
+                        title={c}
+                      />
+                    ))}
+                    <input
+                      type="color"
+                      className="scb-pick"
+                      value={ap.fg || '#1b1a17'}
+                      onChange={(e) => patchPop(shot.id, ap.pid, { fg: e.target.value })}
+                      title="Custom card text color"
+                    />
+                  </span>
+                  <span className="scb-group scb-colorgroup">
+                    <span className="scb-lbl">Card bg</span>
+                    {BG_SWATCHES.map((c) => (
+                      <button
+                        key={c}
+                        className="scb-sw"
+                        data-on={ap.bg === c}
+                        style={{ background: c }}
+                        onClick={() => patchPop(shot.id, ap.pid, { bg: c })}
+                        title={c}
+                      />
+                    ))}
+                    <input
+                      type="color"
+                      className="scb-pick"
+                      value={ap.bg || '#f0ebe1'}
+                      onChange={(e) => patchPop(shot.id, ap.pid, { bg: e.target.value })}
+                      title="Custom card bg color"
+                    />
+                  </span>
+                </div>
+              )}
             </div>
-            <div className="store-scaler">
+            <div className="store-stage">
+              <StoreRuler />
+              <div className="store-scaler">
               <StoreFrame
                 shot={shot}
                 theme={themes[shot.id]}
@@ -564,11 +689,16 @@ export default function StoreScreens() {
                 editing={editing[shot.id] ?? null}
                 onPopDown={(pid, e) => startDragPop(shot.id, pid, e)}
                 onDeselect={() => clearSel(shot.id)}
+                onPhoneDown={(e) => startVDrag(shot.id, 'phone', e)}
+                onTitleDown={(e) => startVDrag(shot.id, 'title', e)}
+                guide={guide[shot.id] ?? null}
                 frameRef={(el) => (refs.current[shot.id] = el)}
               />
+              </div>
             </div>
           </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

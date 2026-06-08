@@ -40,7 +40,7 @@ function Ed({ as: Tag = 'span', className = '', html }) {
 }
 
 // A self-contained, fully interactive Kael app — click through it, then export.
-function MiniApp({ theme, initialTab = 'home', outline = 'black' }) {
+function MiniApp({ theme, initialTab = 'home', rimColor = '#0d0c0a', rimWidth = 6 }) {
   const [tab, setTab] = useState(initialTab)
   const [messages, setMessages] = useState(SEED)
   const [typing, setTyping] = useState(false)
@@ -121,7 +121,14 @@ function MiniApp({ theme, initialTab = 'home', outline = 'black' }) {
   else screen = <HomeScreen onPrompt={startFromPrompt} onMood={bringMood} />
 
   return (
-    <div className="store-phone" data-outline={outline}>
+    <div
+      className="store-phone"
+      style={{
+        background: rimColor,
+        padding: `${rimWidth}px`,
+        boxShadow: rimIsLight(rimColor) ? `${PHONE_SHADOW}, inset 0 0 0 1px rgba(20, 18, 14, 0.12)` : PHONE_SHADOW,
+      }}
+    >
       <div className="phone-screen" data-theme={theme}>
         <StatusBar />
         <div className="screen-body">{screen}</div>
@@ -149,6 +156,37 @@ const SHOTS = [
 
 const FG_SWATCHES = ['#1b1a17', '#6e5638', '#7c7568', '#f7f5f0']
 const BG_SWATCHES = ['#f0ebe1', '#f6f2ea', '#ffffff', '#e7e1d5', '#1b1a17']
+
+// Phone rim (bezel) options.
+const RIM_COLORS = ['#0d0c0a', '#3a3833', '#8a8780', '#d9d5cc', '#ffffff', '#c2a06a']
+const RIM_WIDTHS = [
+  { label: 'Thin', w: 4 },
+  { label: 'Med', w: 6 },
+  { label: 'Thick', w: 10 },
+]
+// Serif options for the App Store title typography (studio preview).
+const SERIF_FONTS = [
+  { label: 'Newsreader (current)', family: 'Newsreader', weight: 600 },
+  { label: 'Charter', family: 'Charter', weight: 600 },
+  { label: 'Fraunces', family: 'Fraunces', weight: 600 },
+  { label: 'Domine', family: 'Domine', weight: 600 },
+  { label: 'Alice', family: 'Alice', weight: 400 },
+  { label: 'Cormorant Garamond', family: 'Cormorant Garamond', weight: 600 },
+  { label: 'Playfair Display', family: 'Playfair Display', weight: 500 },
+  { label: 'Spectral', family: 'Spectral', weight: 500 },
+  { label: 'Bodoni Moda', family: 'Bodoni Moda', weight: 500 },
+  { label: 'DM Serif Display', family: 'DM Serif Display', weight: 400 },
+]
+
+const PHONE_SHADOW = '0 26px 60px -28px rgba(20, 18, 14, 0.4)'
+function rimIsLight(hex) {
+  const h = (hex || '').replace('#', '')
+  if (h.length < 6) return false
+  const r = parseInt(h.slice(0, 2), 16)
+  const g = parseInt(h.slice(2, 4), 16)
+  const b = parseInt(h.slice(4, 6), 16)
+  return 0.299 * r + 0.587 * g + 0.114 * b > 150
+}
 
 // Elements that can be lifted out into a "pop" — the nearest one to a click wins.
 const POP_SELECTOR =
@@ -216,7 +254,7 @@ function PopCard({ pop, active, editing, onDown }) {
   )
 }
 
-function StoreFrame({ shot, theme, outline, top, scale, titleTop, titleScale, bg, fg, picking, onPick, pops, blur, active, editing, onPopDown, onDeselect, onPhoneDown, onTitleDown, guide, frameRef }) {
+function StoreFrame({ shot, theme, rimColor, rimWidth, top, scale, titleTop, titleScale, bg, fg, picking, onPick, pops, blur, active, editing, onPopDown, onDeselect, onPhoneDown, onTitleDown, guide, frameRef }) {
   const blurred = pops.length > 0 && blur > 0
   return (
     <div
@@ -258,7 +296,7 @@ function StoreFrame({ shot, theme, outline, top, scale, titleTop, titleScale, bg
             : undefined
         }
       >
-        <MiniApp theme={theme} initialTab={shot.initialTab} outline={outline} />
+        <MiniApp theme={theme} initialTab={shot.initialTab} rimColor={rimColor} rimWidth={rimWidth} />
       </div>
       {pops.map((p) => (
         <PopCard
@@ -276,7 +314,6 @@ function StoreFrame({ shot, theme, outline, top, scale, titleTop, titleScale, bg
 
 export default function StoreScreens() {
   const [themes, setThemes] = useState(() => Object.fromEntries(SHOTS.map((s) => [s.id, s.theme])))
-  const [outlines, setOutlines] = useState(() => Object.fromEntries(SHOTS.map((s) => [s.id, 'black'])))
   const [targets, setTargets] = useState(() => Object.fromEntries(SHOTS.map((s) => [s.id, 'phone'])))
   const [cfg, setCfg] = useState(() =>
     Object.fromEntries(
@@ -289,6 +326,8 @@ export default function StoreScreens() {
           titleScale: 1,
           bg: '#f0ebe1',
           fg: '#1b1a17',
+          rimColor: '#0d0c0a',
+          rimWidth: 6,
           pops: [],
           blur: 0,
         },
@@ -300,19 +339,19 @@ export default function StoreScreens() {
   const [editing, setEditing] = useState({}) // frameId -> pid being text-edited
   const [guide, setGuide] = useState({}) // frameId -> checkpoint Y while dragging
   const [history, setHistory] = useState([]) // snapshots for undo
+  const [serifIdx, setSerifIdx] = useState(0) // App Store title serif (independent of app serif)
   const pidRef = useRef(1)
   const refs = useRef({})
 
   // Snapshot current structural state (immutable updates make refs safe to keep).
   function pushHistory() {
-    setHistory((h) => [...h.slice(-49), { cfg, themes, outlines, targets }])
+    setHistory((h) => [...h.slice(-49), { cfg, themes, targets }])
   }
   function undo() {
     if (!history.length) return
     const prev = history[history.length - 1]
     setCfg(prev.cfg)
     setThemes(prev.themes)
-    setOutlines(prev.outlines)
     setTargets(prev.targets)
     setHistory((h) => h.slice(0, -1))
     setActive({})
@@ -542,10 +581,6 @@ export default function StoreScreens() {
     pushHistory()
     setThemes((t) => ({ ...t, [id]: t[id] === 'dark' ? 'light' : 'dark' }))
   }
-  function toggleOutline(id) {
-    pushHistory()
-    setOutlines((o) => ({ ...o, [id]: o[id] === 'white' ? 'black' : 'white' }))
-  }
 
   return (
     <div className="lib-page store-page">
@@ -556,12 +591,30 @@ export default function StoreScreens() {
             1290 × 2796. Click through the live app to set up each shot, edit the title, then export the PNG.
           </p>
         </div>
-        <button className="store-undo" onClick={undo} disabled={!history.length} title="Undo last change">
-          ↩ Undo
-        </button>
+        <div className="store-head-tools">
+          <label className="store-fontpick">
+            <span>Title serif</span>
+            <select value={serifIdx} onChange={(e) => setSerifIdx(Number(e.target.value))}>
+              {SERIF_FONTS.map((f, i) => (
+                <option key={f.family} value={i}>
+                  {f.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button className="store-undo" onClick={undo} disabled={!history.length} title="Undo last change">
+            ↩ Undo
+          </button>
+        </div>
       </div>
 
-      <div className="store-grid">
+      <div
+        className="store-grid"
+        style={{
+          '--store-serif': `'${SERIF_FONTS[serifIdx].family}', Georgia, serif`,
+          '--store-serif-w': SERIF_FONTS[serifIdx].weight,
+        }}
+      >
         {SHOTS.map((shot) => {
           const ap = cfg[shot.id].pops.find((p) => p.pid === active[shot.id]) || null
           return (
@@ -579,9 +632,6 @@ export default function StoreScreens() {
                   <span className="scb-group">
                     <button className="scb-seg" onClick={() => toggleTheme(shot.id)}>
                       {themes[shot.id] === 'dark' ? 'Dark' : 'Light'}
-                    </button>
-                    <button className="scb-seg" onClick={() => toggleOutline(shot.id)}>
-                      {outlines[shot.id] === 'white' ? 'White' : 'Black'}
                     </button>
                   </span>
                   <button className="scb-btn scb-png" onClick={() => download(shot.id)}>PNG</button>
@@ -626,6 +676,41 @@ export default function StoreScreens() {
                     onChange={(e) => setColor(shot.id, 'bg', e.target.value)}
                     title="Custom background color"
                   />
+                </span>
+              </div>
+              <div className="scb-tools">
+                <span className="scb-group scb-colorgroup">
+                  <span className="scb-lbl">Rim</span>
+                  {RIM_COLORS.map((c) => (
+                    <button
+                      key={c}
+                      className="scb-sw"
+                      data-on={cfg[shot.id].rimColor === c}
+                      style={{ background: c }}
+                      onClick={() => setColor(shot.id, 'rimColor', c)}
+                      title={c}
+                    />
+                  ))}
+                  <input
+                    type="color"
+                    className="scb-pick"
+                    value={cfg[shot.id].rimColor}
+                    onChange={(e) => setColor(shot.id, 'rimColor', e.target.value)}
+                    title="Custom rim color"
+                  />
+                </span>
+                <span className="scb-group">
+                  <span className="scb-lbl">Width</span>
+                  {RIM_WIDTHS.map((rw) => (
+                    <button
+                      key={rw.w}
+                      className="scb-seg"
+                      data-on={cfg[shot.id].rimWidth === rw.w}
+                      onClick={() => setColor(shot.id, 'rimWidth', rw.w)}
+                    >
+                      {rw.label}
+                    </button>
+                  ))}
                 </span>
               </div>
               <div className="scb-tools scb-poprow">
@@ -719,7 +804,8 @@ export default function StoreScreens() {
               <StoreFrame
                 shot={shot}
                 theme={themes[shot.id]}
-                outline={outlines[shot.id]}
+                rimColor={cfg[shot.id].rimColor}
+                rimWidth={cfg[shot.id].rimWidth}
                 top={cfg[shot.id].top}
                 scale={cfg[shot.id].scale}
                 titleTop={cfg[shot.id].titleTop}

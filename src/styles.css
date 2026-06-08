@@ -5,8 +5,9 @@
 
 /* ---------- Theme tokens ---------- */
 :root {
-  --serif: 'Newsreader', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
-  --sans: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --title: 'Newsreader', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --serif: 'Charter', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   --scale: 0.66;
 
@@ -201,6 +202,12 @@ svg {
   color: var(--studio-ink-2);
   transition: color 0.3s ease, background 0.3s ease;
 }
+.font-toggle button {
+  width: auto;
+  padding: 0 12px;
+  font: 600 11px var(--sans);
+  letter-spacing: 0.01em;
+}
 .top-controls {
   display: flex;
   align-items: center;
@@ -361,6 +368,11 @@ svg {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-3);
+}
+.brand-note {
+  margin: -4px 0 14px;
+  font-size: 13px;
+  color: var(--ink-2);
 }
 .brand-fonts {
   display: grid;
@@ -533,9 +545,39 @@ svg {
   align-items: flex-start;
   gap: 16px;
 }
+.store-head-tools {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 2px;
+}
+.store-fontpick {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.store-fontpick > span {
+  font: 600 10px var(--sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.store-fontpick select {
+  font: 500 13px var(--sans);
+  color: var(--ink);
+  background: var(--field);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 7px 10px;
+  cursor: pointer;
+}
+.store-fontpick select:hover {
+  border-color: var(--line-strong);
+}
 .store-undo {
   flex: 0 0 auto;
-  margin-top: 4px;
+  margin-top: 0;
   padding: 8px 14px;
   border-radius: 10px;
   font: 600 12px var(--sans);
@@ -619,7 +661,8 @@ svg {
 .scb-png {
   color: var(--ink);
 }
-.scb-pickbtn[data-on='true'] {
+.scb-pickbtn[data-on='true'],
+.scb-seg[data-on='true'] {
   background: var(--invert-bg);
   color: var(--invert-ink);
 }
@@ -709,9 +752,9 @@ svg {
 }
 .st-logo-name {
   display: block;
-  font-family: var(--serif);
+  font-family: var(--store-serif, var(--serif));
   font-size: calc(90px * var(--title-scale, 1));
-  font-weight: 600;
+  font-weight: var(--store-serif-w, 600);
   letter-spacing: -0.02em;
   color: var(--title-color, var(--ink));
   margin-bottom: 30px;
@@ -727,8 +770,8 @@ svg {
 }
 .st-title {
   display: block;
-  font-family: var(--serif);
-  font-weight: 600;
+  font-family: var(--store-serif, var(--serif));
+  font-weight: var(--store-serif-w, 600);
   font-size: calc(112px * var(--title-scale, 1));
   line-height: 1.02;
   letter-spacing: -0.035em;
@@ -1850,9 +1893,9 @@ svg {
   background: var(--ink);
   color: var(--paper);
   border-radius: 22px 22px 7px 22px;
-  padding: 13px 17px;
-  font-size: 15.5px;
-  line-height: 1.45;
+  padding: 14px 18px;
+  font-size: 17px;
+  line-height: 1.5;
   font-weight: 450;
   letter-spacing: -0.003em;
 }
@@ -1864,10 +1907,10 @@ svg {
   border-radius: 7px 22px 22px 22px;
   padding: 15px 19px;
   font-family: var(--serif);
-  font-size: 17.5px;
+  font-size: 17px;
   line-height: 1.5;
   font-weight: 400;
-  letter-spacing: 0.002em;
+  letter-spacing: 0;
   box-shadow: var(--shadow-card);
 }
 .bubble-stack {
@@ -3671,4 +3714,28 @@ svg {
 }
 .sheet-cta:hover {
   transform: translateY(-2px);
+}
+
+/* ---- 3-font system: titles/headings use Newsreader (--title);
+   Kael's responses and reading prose stay Charter (--serif); UI is DM Sans (--sans). ---- */
+.brand-name,
+.lib-title,
+.studio-lede h1,
+.home-greeting h1,
+.pickup-q,
+.chat-head .ch-name,
+.learn-head h1,
+.li-title,
+.lesson .l-title,
+.lesson-row .lr-title,
+.mirror-head h1,
+.mcard-title,
+.kread h2,
+.kread h3,
+.growth h3,
+.journey-intro h1,
+.j-title,
+.reader-title,
+.sheet-title {
+  font-family: var(--title);
 }

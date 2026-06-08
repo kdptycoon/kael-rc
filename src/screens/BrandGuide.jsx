@@ -38,11 +38,12 @@ const COLOR_GROUPS = [
 ]
 
 const TYPE_SCALE = [
-  { key: 'display', spec: 'Newsreader · 300 · 36px', sample: 'Good afternoon', font: 'serif', size: 34, weight: 300 },
-  { key: 'headline', spec: 'Newsreader · 400 · 25px', sample: 'Kael’s read of you', font: 'serif', size: 25, weight: 400 },
-  { key: 'quote', spec: 'Newsreader italic · 400 · 17px', sample: '“My needs are too much.”', font: 'serif', size: 18, weight: 400, italic: true },
-  { key: 'body', spec: 'Hanken Grotesk · 400 · 15px', sample: 'You move toward closeness and read distance as risk.', font: 'sans', size: 15, weight: 400 },
-  { key: 'label', spec: 'Hanken Grotesk · 600 · 11px · 0.08em · UPPER', sample: 'Bring a mood to Kael', font: 'sans', size: 11, weight: 600, upper: true },
+  { key: 'display', spec: 'Newsreader · 400 · 34px — titles', sample: 'Good morning, Maya', font: 'title', size: 32, weight: 400 },
+  { key: 'headline', spec: 'Newsreader · 600 · 22px — headings', sample: 'Kael’s read of you', font: 'title', size: 22, weight: 600 },
+  { key: 'voice', spec: 'Charter · 400 · 17px — Kael’s replies', sample: 'Let’s slow it down. What part hurts most right now?', font: 'serif', size: 17, weight: 400 },
+  { key: 'quote', spec: 'Charter italic · 400 · 18px', sample: '“My needs are too much.”', font: 'serif', size: 18, weight: 400, italic: true },
+  { key: 'body', spec: 'DM Sans · 400 · 15px — body & your messages', sample: 'You move toward closeness and read distance as risk.', font: 'sans', size: 15, weight: 400 },
+  { key: 'label', spec: 'DM Sans · 600 · 11px · 0.08em · UPPER', sample: 'Bring a mood to Kael', font: 'sans', size: 11, weight: 600, upper: true },
 ]
 
 function tokenValue(name) {
@@ -70,10 +71,12 @@ export default function BrandGuide() {
       <p className="lib-sub">Tap any value to copy it.</p>
 
       <span className="brand-h">Typeface</span>
+      <p className="brand-note">A three-font system, each with one job.</p>
       <div className="brand-fonts">
         {[
-          { token: '--serif', name: 'Newsreader', role: 'Serif — display, headlines, quotes', sample: 'Aa' },
-          { token: '--sans', name: 'Hanken Grotesk', role: 'Sans — body, labels, UI', sample: 'Aa' },
+          { token: '--title', name: 'Newsreader', role: 'Titles & headlines', sample: 'Aa' },
+          { token: '--serif', name: 'Charter', role: 'Kael’s voice & reading prose', sample: 'Aa' },
+          { token: '--sans', name: 'DM Sans', role: 'UI, labels & your messages', sample: 'Aa' },
         ].map((f) => (
           <button key={f.token} className="brand-font" onClick={() => copy(tokenValue(f.token), f.token)}>
             <span className="bf-sample" style={{ fontFamily: `var(${f.token})` }}>

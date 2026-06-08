@@ -169,10 +169,10 @@ const MOOD_EXCHANGES = {
     kael:
       'Good. Hope is information too. What shifted, and what would you like to protect about this feeling?',
   },
-  numb: {
-    user: 'I feel kind of numb.',
+  lonely: {
+    user: 'I feel really lonely.',
     kael:
-      'Numb is often a lot of feeling with the volume turned down. We don’t have to force it. When did you last feel something clearly?',
+      'Lonely is a hard one to sit in, and it usually means you’re built for closeness that isn’t reaching you right now. Who do you most wish felt nearer tonight?',
   },
   calm: {
     user: 'I feel calm right now.',

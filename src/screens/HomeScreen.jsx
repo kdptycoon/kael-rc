@@ -11,7 +11,7 @@ import {
   MoodAnxious,
   MoodHurt,
   MoodHopeful,
-  MoodNumb,
+  MoodLonely,
   MoodCalm,
   MoodOverwhelmed,
   Quote,
@@ -23,7 +23,7 @@ const MOODS = [
   { id: 'anxious', label: 'Anxious', Icon: MoodAnxious },
   { id: 'hurt', label: 'Hurt', Icon: MoodHurt },
   { id: 'hopeful', label: 'Hopeful', Icon: MoodHopeful },
-  { id: 'numb', label: 'Numb', Icon: MoodNumb },
+  { id: 'lonely', label: 'Lonely', Icon: MoodLonely },
   { id: 'calm', label: 'Calm', Icon: MoodCalm },
   { id: 'overwhelmed', label: 'Overwhelmed', Icon: MoodOverwhelmed },
 ]

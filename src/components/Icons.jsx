@@ -135,6 +135,7 @@ export const MoodAnxious = make(SmileyNervous)
 export const MoodHurt = make(HeartBreak)
 export const MoodHopeful = make(SunHorizon)
 export const MoodNumb = make(CloudFog)
+export const MoodLonely = make(PhMoon)
 export const MoodCalm = make(Leaf)
 export const MoodOverwhelmed = make(Waves)
 

@@ -10,6 +10,8 @@ import LessonScreen from './screens/LessonScreen.jsx'
 import ComponentLibrary from './screens/ComponentLibrary.jsx'
 import BrandGuide from './screens/BrandGuide.jsx'
 import StoreScreens from './screens/StoreScreens.jsx'
+import Onboarding from './screens/Onboarding.jsx'
+import PaywallLab from './screens/PaywallLab.jsx'
 import { Sparkle, Sun, Moon, Download, Grid } from './components/Icons.jsx'
 import { kaelReply, chipExchange, moodExchange } from './kael.js'
 import { getLesson } from './lessons.js'
@@ -241,14 +243,32 @@ export default function App() {
               >
                 App Store
               </button>
+              <button
+                className="studio-tab"
+                data-on={studioTab === 'onboarding'}
+                onClick={() => setStudioTab('onboarding')}
+              >
+                Onboarding
+              </button>
+              <button
+                className="studio-tab"
+                data-on={studioTab === 'paywall'}
+                onClick={() => setStudioTab('paywall')}
+              >
+                Paywalls
+              </button>
             </div>
             <div className="studio-body">
               {studioTab === 'components' ? (
                 <ComponentLibrary />
               ) : studioTab === 'brand' ? (
                 <BrandGuide />
-              ) : (
+              ) : studioTab === 'store' ? (
                 <StoreScreens />
+              ) : studioTab === 'paywall' ? (
+                <PaywallLab />
+              ) : (
+                <Onboarding />
               )}
             </div>
           </div>

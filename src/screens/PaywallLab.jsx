@@ -11,6 +11,7 @@ import {
   Wind,
   HandHeart,
   Quotes,
+  ShieldCheck,
 } from '@phosphor-icons/react'
 
 /* ──────────────────────────────────────────────────────────────────────────
@@ -264,7 +265,54 @@ function VPanel() {
   )
 }
 
+/* 05 · The Secure Plan, grouped — top icon, centered hero, price hugs the CTA */
+function VGrouped() {
+  const [plan, setPlan] = useState('annual')
+  const feats = [
+    { icon: InfinityIcon, t: 'Unlimited conversations', s: 'Every spiral and fight, no caps' },
+    { icon: Brain, t: 'Kael remembers everything', s: 'Your people and patterns, never re-explain' },
+    { icon: ArrowsClockwise, t: 'Spot the patterns you repeat', s: 'The triggers and beliefs underneath' },
+    { icon: Anchor, t: 'Build a secure foundation', s: 'Steadier reactions, one moment at a time' },
+  ]
+  return (
+    <div className="ob-screen pl-screen pl-grouped" data-theme="light">
+      <CloseX />
+      <div className="pl-body">
+        <div className="pl-hero">
+          <span className="pl-badge pl-badge-warm">
+            <ShieldCheck size={22} weight="duotone" />
+          </span>
+          <Ed as="p" className="pl-kicker">Kael Premium</Ed>
+          <Ed as="h1" className="pl-title">The Secure Plan</Ed>
+          <Ed as="p" className="pl-lede">Unlimited access to the coach who remembers your whole story.</Ed>
+        </div>
+        <div className="pl-feats pl-feats-tight">
+          {feats.map((f) => (
+            <div className="pl-feat" key={f.t}>
+              <span className="pl-feat-ic">
+                <f.icon size={22} weight="duotone" />
+              </span>
+              <div className="pl-feat-t">
+                <Ed as="b">{f.t}</Ed>
+                <Ed as="span">{f.s}</Ed>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="pl-tail">
+          <PlanStack plan={plan} setPlan={setPlan} />
+        </div>
+      </div>
+      <footer className="pl-foot">
+        <Cta>Start 7-day free trial</Cta>
+        <Links />
+      </footer>
+    </div>
+  )
+}
+
 const VARIANTS = [
+  { id: 'grouped', cap: '05 · The Secure Plan, grouped', note: 'Top icon, centered hero, price hugs CTA', C: VGrouped },
   { id: 'classic', cap: '01 · The Secure Plan', note: 'Icon-chip list · capabilities', C: VClassic },
   { id: 'midnight', cap: '02 · Become the calm one', note: 'Dark, numbered list · outcomes', C: VMidnight },
   { id: 'hairline', cap: '03 · Whenever you need it', note: 'Hairline list · in-the-moment', C: VHairline },

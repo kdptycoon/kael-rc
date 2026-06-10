@@ -5362,7 +5362,8 @@ svg {
   gap: 1px;
 }
 .pl-feat-t b {
-  font: 600 15.5px var(--sans);
+  font: 600 17px var(--serif);
+  letter-spacing: -0.01em;
   color: var(--ink);
 }
 .pl-feat-t span {
@@ -5658,6 +5659,34 @@ svg {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-3);
+}
+
+/* Grouped layout: centered hero up top, price block hugging the CTA */
+.pl-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.pl-hero .pl-badge {
+  margin-bottom: 18px;
+}
+.pl-hero .pl-kicker {
+  margin-bottom: 8px;
+}
+.pl-hero .pl-lede {
+  max-width: 300px;
+}
+.pl-grouped .pl-feats-tight {
+  margin-top: 28px;
+  gap: 15px;
+}
+.pl-grouped .pl-body {
+  padding-top: 44px;
+}
+.pl-grouped .pl-tail {
+  margin-top: auto;
+  padding-top: 16px;
 }
 
 /* Inline-editable copy */

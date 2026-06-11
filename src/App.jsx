@@ -12,6 +12,7 @@ import BrandGuide from './screens/BrandGuide.jsx'
 import StoreScreens from './screens/StoreScreens.jsx'
 import Onboarding from './screens/Onboarding.jsx'
 import PaywallLab from './screens/PaywallLab.jsx'
+import ReflectionCards from './screens/ReflectionCards.jsx'
 import { Sparkle, Sun, Moon, Download, Grid } from './components/Icons.jsx'
 import { kaelReply, chipExchange, moodExchange } from './kael.js'
 import { getLesson } from './lessons.js'
@@ -257,6 +258,13 @@ export default function App() {
               >
                 Paywalls
               </button>
+              <button
+                className="studio-tab"
+                data-on={studioTab === 'cards'}
+                onClick={() => setStudioTab('cards')}
+              >
+                Cards
+              </button>
             </div>
             <div className="studio-body">
               {studioTab === 'components' ? (
@@ -267,6 +275,8 @@ export default function App() {
                 <StoreScreens />
               ) : studioTab === 'paywall' ? (
                 <PaywallLab />
+              ) : studioTab === 'cards' ? (
+                <ReflectionCards />
               ) : (
                 <Onboarding />
               )}
